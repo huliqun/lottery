@@ -1,0 +1,238 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 18 10:18:23 2016
+
+@author: huliqun
+"""
+from sqlalchemy import Column, Integer, SmallInteger, String, Date, Time,\
+    Text, DateTime, func,BigInteger,Float
+from sqlalchemy.ext.declarative import declarative_base
+from workserver.util import GLBConfig
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'tbl_user'
+    userid = Column(String(100), primary_key=True, nullable=False)
+    username = Column(String(60), nullable=False)
+    accounttype = Column(String(10), nullable=False)
+    phone = Column(String(60), nullable=False)
+    local = Column(String(250))
+    IDNo = Column(String(250))
+    _password = Column('password', String(64), default='')
+    regdate = Column(DateTime(), default=func.now(), nullable=False)
+    expdate = Column(Date())
+    payhtimes = Column(Integer, default=0, nullable=False)
+    paytimes = Column(Integer, default=0, nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+        
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, password):
+        import hashlib
+        # encrypt the password with md5
+        self._password = hashlib.md5(password.encode('utf-8')).hexdigest()
+
+class UserData(Base):
+    __tablename__ = 'tbl_userdata'
+    userid = Column(String(100), primary_key=True, nullable=False)
+    basemoney = Column(Float, default=0.0)
+     
+class PayLog(Base):
+    __tablename__ = 'tbl_paylog'
+    uid = Column(Integer, primary_key=True, autoincrement=True)
+    userid = Column(String(100))
+    payDate = Column(Date(), default=func.now(), nullable=False)
+    payType = Column(String(10))
+    fromDate = Column(DateTime())
+    toDate = Column(DateTime())
+
+class AccountRunning(Base):
+    __tablename__ = 'tbl_account_running'
+    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    userid = Column(String(100))
+    date = Column(Date())
+    useMoney = Column(Float, default=0.0)
+    resultMoney = Column(Float, default=0.0)
+    dResult = Column(Float, default=0.0)
+    riskMoney = Column(Float, default=0.0)
+    totalResult = Column(Float, default=0.0)
+    fixTotal = Column(Float, default=0.0)
+    status = Column(String(5), default='1')
+    
+class MatchData(Base):
+    __tablename__ = 'tbl_matchdata'
+    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    userid = Column(String(100))
+    date = Column(Date())
+    singleFlag = Column(String(10))
+    matchAID = Column(String(50))
+    matchAResult = Column(String(10))
+    matchBID = Column(String(50))
+    matchBResult = Column(String(10))
+    rate = Column(Float, default=0.0)
+    money = Column(Float, default=0.0)
+    ResultMoney = Column(Float, default=0.0)
+    dealerid = Column(Integer)
+    status = Column(String(5), default='1')
+
+class Dealer(Base):
+    __tablename__ = 'tbl_dealer'
+    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    name = Column(String(30))
+    straightwin = Column(Integer, default=0)
+    straightlost = Column(Integer, default=0)
+    rule = Column(String(100))
+    desc = Column(Text)
+
+class MatchInfo(Base):
+    __tablename__ = 'tbl_matchinfo'
+    matchid = Column(String(50), primary_key=True)
+    match = Column(String(30))
+    date = Column(Date())
+    matchTime = Column(Time())
+    matchtype = Column(String(50))
+    matchtypename = Column(String(50))
+    matchzhu = Column(String(50))
+    matchke = Column(String(50))
+    matchzhuf = Column(String(50))
+    matchkef = Column(String(50))
+    zhuHScore = Column(Integer)
+    keHScore = Column(Integer)
+    zhuScore = Column(Integer)
+    keScore = Column(Integer)
+    mResult = Column(String(10))
+    status = Column(String(20))
+    wrate = Column(Float, default=0.0)
+    drate = Column(Float, default=0.0)
+    lrate = Column(Float, default=0.0)
+    minrate = Column(Float, default=0.0)
+    fixScore = Column(Integer)
+    fixResult = Column(String(10))
+    wrateS = Column(Float, default=0.0)
+    drateS = Column(Float, default=0.0)
+    lrateS = Column(Float, default=0.0)
+    minrateS = Column(Float, default=0.0)
+    singleFlag = Column(String(10))
+    score = Column(Integer)
+    s0 = Column(Float, default=0.0)
+    s1 = Column(Float, default=0.0)
+    s2 = Column(Float, default=0.0)
+    s3 = Column(Float, default=0.0)
+    s4 = Column(Float, default=0.0)
+    s5 = Column(Float, default=0.0)
+    s6 = Column(Float, default=0.0)
+    s7 = Column(Float, default=0.0)
+    infoUrl = Column(String(200))
+    zhuRank = Column(Integer, default=7) 
+    keRank = Column(Integer, default=7)
+    rankDValue = Column(Integer, default=0)
+ 
+class MatchInfo500(Base):
+    __tablename__ = 'tbl_matchinfo_500'
+    matchid = Column(String(50), primary_key=True)
+    mid = Column(String(50))
+    match = Column(String(30))
+    date = Column(Date())
+    mdate = Column(DateTime())
+    matchtype = Column(String(50))
+    matchzhu = Column(String(50))
+    matchke = Column(String(50))
+    zhuRank = Column(Integer, default=7) 
+    keRank = Column(Integer, default=7)
+    rankDValue = Column(Integer, default=0)
+    zhuHScore = Column(Integer)
+    keHScore = Column(Integer)
+    zhuScore = Column(Integer)
+    keScore = Column(Integer)
+    mResult = Column(String(10))
+    status = Column(String(20))
+    wrate = Column(Float, default=0.0)
+    drate = Column(Float, default=0.0)
+    lrate = Column(Float, default=0.0)
+    minrate = Column(Float, default=0.0)
+    fixScore = Column(Integer)
+    fixResult = Column(String(10))
+    wrateS = Column(Float, default=0.0)
+    drateS = Column(Float, default=0.0)
+    lrateS = Column(Float, default=0.0)
+    minrateS = Column(Float, default=0.0)
+    singleFlag = Column(String(10)) 
+
+class MatchInfoD(Base):
+    __tablename__ = 'tbl_matchinfod'
+    matchid = Column(String(50), primary_key=True)
+    match = Column(String(30))
+    date = Column(Date())
+    matchTime = Column(Time())
+    matchtype = Column(String(50))
+    matchtypename = Column(String(50))
+    matchzhu = Column(String(50))
+    matchke = Column(String(50))
+    matchzhuf = Column(String(50))
+    matchkef = Column(String(50))
+    zhuHScore = Column(Integer)
+    keHScore = Column(Integer)
+    zhuScore = Column(Integer)
+    keScore = Column(Integer)
+    mResult = Column(String(10))
+    status = Column(String(20))
+    wrate = Column(Float, default=0.0)
+    drate = Column(Float, default=0.0)
+    lrate = Column(Float, default=0.0)
+    minrate = Column(Float, default=0.0)
+    fixScore = Column(Integer)
+    fixResult = Column(String(10))
+    wrateS = Column(Float, default=0.0)
+    drateS = Column(Float, default=0.0)
+    lrateS = Column(Float, default=0.0)
+    minrateS = Column(Float, default=0.0)
+    singleFlag = Column(String(10))
+    score = Column(Integer)
+    s0 = Column(Float, default=0.0)
+    s1 = Column(Float, default=0.0)
+    s2 = Column(Float, default=0.0)
+    s3 = Column(Float, default=0.0)
+    s4 = Column(Float, default=0.0)
+    s5 = Column(Float, default=0.0)
+    s6 = Column(Float, default=0.0)
+    s7 = Column(Float, default=0.0)
+    infoUrl = Column(String(200))
+    zhuRank = Column(Integer, default=7) 
+    keRank = Column(Integer, default=7)
+    rankDValue = Column(Integer, default=0)
+ 
+class MatchInfo500D(Base):
+    __tablename__ = 'tbl_matchinfo_500d'
+    matchid = Column(String(50), primary_key=True)
+    mid = Column(String(50))
+    match = Column(String(30))
+    date = Column(Date())
+    mdate = Column(DateTime())
+    matchtype = Column(String(50))
+    matchzhu = Column(String(50))
+    matchke = Column(String(50))
+    zhuRank = Column(Integer, default=7) 
+    keRank = Column(Integer, default=7)
+    rankDValue = Column(Integer, default=0)
+    zhuHScore = Column(Integer)
+    keHScore = Column(Integer)
+    zhuScore = Column(Integer)
+    keScore = Column(Integer)
+    mResult = Column(String(10))
+    status = Column(String(20))
+    wrate = Column(Float, default=0.0)
+    drate = Column(Float, default=0.0)
+    lrate = Column(Float, default=0.0)
+    minrate = Column(Float, default=0.0)
+    fixScore = Column(Integer)
+    fixResult = Column(String(10))
+    wrateS = Column(Float, default=0.0)
+    drateS = Column(Float, default=0.0)
+    lrateS = Column(Float, default=0.0)
+    minrateS = Column(Float, default=0.0)
+    singleFlag = Column(String(10)) 

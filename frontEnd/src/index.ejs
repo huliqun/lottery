@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="huliqun">
+  <title><%=htmlWebpackPlugin.options.title %></title>
+  <!-- 新 Bootstrap 核心 CSS 文件 -->
+  <link href="/static/dependencies/jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrapvalidator/dist/css/bootstrapValidator.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrap-dialog/dist/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/lightbox2/dist/css/lightbox.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/dependencies/jquery-thumbox/jquery.thumbox.1.2.css" rel="stylesheet" type="text/css">
+</head>
+<body class="hold-transition sidebar-mini">
+  <div id="app">
+  </div>
+  <script src="/static/dependencies/jquery/dist/jquery.min.js"></script>
+  <script src="/static/dependencies/store/store.min.js"></script>
+  <script src="/static/dependencies/jqueryui/jquery-ui.min.js"></script>
+  <script src="/static/dependencies/lightbox2/dist/js/lightbox.min.js"></script>
+  <script>
+  $.widget.bridge('uibutton', $.ui.button);
+  init()
+    function init() {
+        if (!store.enabled) {
+            alert('Local storage is not supported by your browser. Please disable "Private Mode", or upgrade to a modern browser.')
+            return
+        }
+    }
+  </script>
+  <script src="/static/dependencies/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/static/dependencies/select2/dist/js/select2.full.min.js"></script>
+  <script src="/static/dependencies/select2/dist/js/i18n/zh-CN.js"></script>
+  <script src="/static/dependencies/bootstrap-table/dist/bootstrap-table.min.js"></script>
+  <script src="/static/dependencies/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+  <script src="/static/dependencies/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js"></script>
+  <script src="/static/dependencies/bootstrap-table/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+  <script src="/static/dependencies/bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+  <script src="/static/dependencies/tableexport/dist/js/tableexport.min.js"></script>
+  <script src="/static/dependencies/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="/static/dependencies/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+  <script src="/static/dependencies/moment/min/moment.min.js"></script>
+  <script src="/static/dependencies/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="/static/dependencies/bootstrapvalidator/dist/js/bootstrapValidator.min.js"></script>
+  <script src="/static/dependencies/bootstrapvalidator/dist/js/language/zh_CN.js"></script>
+  <script src="/static/dependencies/bootstrap-dialog/dist/js/bootstrap-dialog.min.js"></script>
+  <script src="/static/dependencies/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <script src="/static/dependencies/raphael/raphael.min.js"></script>
+  <script src="/static/dependencies/jquery-sparkline/jquery.sparkline.min.js"></script>
+  <script src="/static/dependencies/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/static/dependencies/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+  <script src="/static/dependencies/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/static/dependencies/fastclick/lib/fastclick.js"></script>
+  <script src="/static/dependencies/jquery-thumbox/jquery.thumbox.1.2.js"></script>
+</body>
+</html>
