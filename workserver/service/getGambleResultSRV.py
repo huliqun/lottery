@@ -83,8 +83,8 @@ class getGambleResultResource(ServiceBase):
     def getMatch(self, u):
         tomorrow = SysUtil.getTomorrow
         matches = self.session.query(MatchInfoD).\
-            filter(or_(and_(MatchInfoD.date==tomorrow,MatchInfoD.matchTime < '22:00:00'), 
-                       and_(MatchInfoD.date==SysUtil.getToday,MatchInfoD.matchTime >= '22:00:00') )).\
+            filter(or_(and_(MatchInfoD.date==tomorrow,MatchInfoD.matchTime < datetime.time(22,00,00)), 
+                       and_(MatchInfoD.date==SysUtil.getToday,MatchInfoD.matchTime >= datetime.time(22,00,00)) )).\
             filter(MatchInfoD.singleFlag == '1').\
             filter(MatchInfoD.minrate > 0.1).\
             order_by(MatchInfoD.wrate).all()
