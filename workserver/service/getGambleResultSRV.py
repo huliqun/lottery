@@ -10,7 +10,7 @@ from sqlalchemy.sql import func, or_, and_
 
 from workserver.util import GLBConfig
 from workserver.service.ServiceBase import ServiceBase
-from workserver.module.models import User,UserData, MatchInfoD, MatchData, AccountRunning
+from workserver.module.models import User,UserData, MatchInfoD, MatchData, AccountRunning, MatchInfo
 from workserver.util import SysUtil
 
 class getGambleResultResource(ServiceBase):
@@ -57,7 +57,12 @@ class getGambleResultResource(ServiceBase):
         if req_para['gambleFlag'] == '1':
             self.session.commit()
         else:
-            self.session.rollback()                               
+            self.session.rollback()
+
+        req.context['result'] = self.result
+        resp.set_header('Powered-By', 'huliquns@126.com')
+        resp.status = falcon.HTTP_200
+        self.release()                           
                                
 
     def matchCalcMoney(self, u):
@@ -65,10 +70,14 @@ class getGambleResultResource(ServiceBase):
         if udata is None:
             self.errorReturn(GLBConfig.API_ERROR, '目标金额未设置.')
         
+        
+        self.matchresult(u, udata, SysUtil.getYesterday())
+        self.matchresult(u, udata, SysUtil.getToday())    
+            
         ct = self.session.query(func.count('*')).\
             filter(MatchData.userid == u.userid).\
             filter(MatchData.date == SysUtil.getToday()).\
-            filter(MatchData.ResultMoney == 0).scalar()
+            filter(MatchData.ResultMoney == 0.0).scalar()
         
         if datetime.datetime.now().time() < datetime.time(19,0,0):
             if ct != 0:
@@ -78,13 +87,74 @@ class getGambleResultResource(ServiceBase):
         
         if mCount > 0:
             self.calMoney(u, udata, mCount)
+            
+    def getMatchMoney(self, m):
+        mA= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
+        if mA is None:
+            return 0.0
+            
+        if mA.mResult:
+            if mA.mResult == m.matchAResult:
+                return m.rate * m.money
+            else:
+                return -m.money
+        return 0.0
         
+    def matchresult(self, u, ud, date):
+        account = self.session.query(AccountRunning).\
+            filter(AccountRunning.userid == u.userid).\
+            filter(AccountRunning.date == date).delete()
+        self.session.flush()
+            
+        account = self.session.query(AccountRunning).\
+            filter(AccountRunning.userid == u.userid).\
+            filter(AccountRunning.date < date).\
+            order_by(AccountRunning.date.desc()).first()
+            
+        matches = self.session.query(MatchData).\
+            filter(MatchData.userid == u.userid).\
+            filter(MatchData.date == date).all()
+            
+        sumMoney = 0.00
+        winMoney = 0.00
         
+        i=0
+        for m in matches:
+            sumMoney += m.money
+            m.ResultMoney = self.getMatchMoney(m)
+            winMoney += m.ResultMone
+            i+=1
+            self.session.flush()
+            
+        fixTotal = account.fixTotal
+        fTotalResult = account.totalResult+winMoney
+        fRiskMoney = account.riskMoney+winMoney
+        if fTotalResult > 5 * ud.basemoney:
+            fixTotal = fixTotal + fTotalResult 
+            fTotalResult = 0.00
+            fRiskMoney = 0.00
+            
+        ar = AccountRunning(userid = u.userid,
+                            date = date,
+                            useMoney = sumMoney,
+                            dResult = winMoney,
+                            riskMoney = fRiskMoney,
+                            totalResult = fRiskMoney,
+                            fixTotal = fixTotal)
+        self.session.add(ar)
+        self.session.flush()
+    
     def getMatch(self, u):
-        tomorrow = SysUtil.getTomorrow
+        tomorrow = SysUtil.getTomorrow()
+        self.session.query(MatchData).\
+            filter(MatchData.userid == u.userid).\
+            filter(MatchData.date == tomorrow).delete()
+        
+        self.session.flush()
+            
         matches = self.session.query(MatchInfoD).\
             filter(or_(and_(MatchInfoD.date==tomorrow,MatchInfoD.matchTime < datetime.time(22,00,00)), 
-                       and_(MatchInfoD.date==SysUtil.getToday,MatchInfoD.matchTime >= datetime.time(22,00,00)) )).\
+                       and_(MatchInfoD.date==SysUtil.getToday(),MatchInfoD.matchTime >= datetime.time(22,00,00)) )).\
             filter(MatchInfoD.singleFlag == '1').\
             filter(MatchInfoD.minrate > 0.1).\
             order_by(MatchInfoD.wrate).all()
@@ -92,8 +162,8 @@ class getGambleResultResource(ServiceBase):
         count = 0
         for m in matches:
             rateList = (m.wrate,m.drate,m.lrate)
-            rateAIdex = getMaxIndex(rateList)
-            rateBIdex = getMidIndex(rateList)
+            rateAIdex = SysUtil.getMaxIndex(rateList)
+            rateBIdex = SysUtil.getMidIndex(rateList)
             
             if m.minrate < 1.46:
                 if m.randDValue > 8 or m.randDValue < -8:
@@ -101,16 +171,16 @@ class getGambleResultResource(ServiceBase):
                     rateBIdex = 2
                     
             if m.matchtypename == '欧洲杯' and m.minrate < 1.30:
-                rateAIdex = getMinIndex(rateList)
-                rateBIdex = getMidIndex(rateList)
+                rateAIdex = SysUtil.getMinIndex(rateList)
+                rateBIdex = SysUtil.getMidIndex(rateList)
             
             if m.matchtypename == '奥运女足' and m.minrate < 1.351:
-                rateAIdex = getMinIndex(rateList)
-                rateBIdex = getMidIndex(rateList)
+                rateAIdex = SysUtil.getMinIndex(rateList)
+                rateBIdex = SysUtil.getMidIndex(rateList)
             
             if m.matchtypename == '奥运男足' and m.minrate < 1.351:
-                rateAIdex = getMinIndex(rateList)
-                rateBIdex = getMidIndex(rateList)
+                rateAIdex = SysUtil.getMinIndex(rateList)
+                rateBIdex = SysUtil.getMidIndex(rateList)
             
             mA = MatchData(userid = u.userid,
                     date = tomorrow,
@@ -149,16 +219,16 @@ class getGambleResultResource(ServiceBase):
                 if money < ud.basemoney*0.8:
                     money = ud.basemoney*0.8  
         
-        maches = self.session.query(MatchData).\
+        matches = self.session.query(MatchData).\
             filter(MatchData.userid == u.userid).\
             filter(MatchData.date == tomorrow).all()
         
-        if len(maches) > 0:
-            base = maches[0].rate
+        if len(matches) > 0:
+            base = matches[0].rate
             sumRPara = 1
-            for m in maches[1:]:
+            for m in matches[1:]:
                 sumRPara += base/m.rate
                 
-            for m in maches:
+            for m in matches:
                 m.money = round(base/m.rate*ud.baseMoney/2,0)*2
                 self.session.flush()

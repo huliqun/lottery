@@ -71,7 +71,7 @@ class GlobalVar:
     glb_browser_in_use = 0
 
 def global_init():
-    GlobalVar.engine_handle = create_engine(settings.dbUrl, encoding="utf-8",poolclass=QueuePool, pool_size=50, pool_recycle=3600, echo=False)
+    GlobalVar.engine_handle = create_engine(settings.dbUrl) # encoding="utf-8",poolclass=QueuePool, pool_size=50, pool_recycle=3600, echo=False
     GlobalVar.db_handle = sessionmaker(bind=GlobalVar.engine_handle)
     
 def get_engine_handle():
@@ -87,11 +87,14 @@ def exceptionPrint(logger, ex):
     logger.error(traceback.print_exc())
     logger.error(ex)
 
-def getTomorrow():  
-    return datetime.date.today() + datetime.timedelta(days=1) 
+def getTomorrow():
+    return datetime.date.today() + datetime.timedelta(days=1)
     
-def getToday():  
+def getToday(): 
     return datetime.date.today()
+    
+def getYesterday():
+    return datetime.date.today() - datetime.timedelta(days=1)
     
 def numMoneyFormat(num):
     return '%.2f' % (num)

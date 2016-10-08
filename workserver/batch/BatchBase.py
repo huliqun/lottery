@@ -17,8 +17,16 @@ class BatchBase(object):
         className = self.__class__.__name__
         LogUtil.initLogBatch(className)
         SysUtil.global_init()
-        
-        self.logger = logging.getLogger('batchLog_'+className)
         self.engine = SysUtil.get_engine_handle()
         self.db = SysUtil.get_db_handle()
+        self.logger = logging.getLogger('batchLog_'+className)
+        
+    def initialize(self):
         self.session = self.db()
+        
+    def release(self):
+        self.session.close()
+        
+    def errorReturn(self):
+        self.session.rollback()
+        self.session.close()
