@@ -120,6 +120,22 @@ class SpiderSports500WBatch(BatchBase):
             if i < minNum:
                 minNum = i
         return minNum
+        
+    def getMDate(self, date, TimeStr):
+        patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
+        timeD = patternDate.findall(TimeStr)
+        patternTime=re.compile(u'\d{2}:\d{2}:\d{2}');
+        timeT = patternTime.findall(TimeStr)
+        if len(timeT)>0:
+            d = date
+            if timeT[0] > '23:40:00':
+                delta = datetime.timedelta(days=1) 
+                d += delta 
+                return d
+        if not timeT:
+            return datetime.datetime.strptime(TimeStr,"%Y-%m-%d").date()
+        else:
+            return datetime.datetime.strptime(timeD[0],"%Y-%m-%d").date()
 
     def getMatchSync(self, trs500W,dateInfo,num):
         try:
@@ -129,7 +145,7 @@ class SpiderSports500WBatch(BatchBase):
                 mid = line['mid']
                 match = dateInfo[2]+tds[0].a.contents[0]
                 date = datetime.datetime.strptime(dateInfo[1],"%Y-%m-%d").date()
-                mdate = datetime.datetime.strptime(line['pdate'],"%Y-%m-%d").date()
+                mdate = self.getMDate(date,line['pendtime'])
                 matchid = mdate.isoformat().replace(u'-','')+match
                 mtime = datetime.datetime.strptime(line['pendtime'],"%Y-%m-%d %H:%M:%S")
                 

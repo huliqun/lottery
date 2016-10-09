@@ -8,7 +8,6 @@ import urllib
 import datetime
 import re
 from bs4 import BeautifulSoup
-from sqlalchemy import text
 
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
@@ -17,6 +16,9 @@ from workserver.module.models import MatchInfoD, MatchInfo500D
 class SpiderSports500WCurrentBatch(BatchBase):
     def run(self):
         self.initialize()
+        self.session.query(MatchInfo500D).delete()
+        self.session.flush()
+        
         urlid500W = 'http://trade.500.com/jczq/?date='+SysUtil.getToday().isoformat()+'&playtype=both'
         content500W = urllib.request.urlopen(urlid500W,timeout = 10).read()
         message500W = content500W.decode('gbk')
@@ -50,6 +52,22 @@ class SpiderSports500WCurrentBatch(BatchBase):
         return [text,patternDate.findall(dataStr)[0],weekday]       
     
         self.release()
+    
+    def getMDate(self, date, TimeStr):
+        patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
+        timeD = patternDate.findall(TimeStr)
+        patternTime=re.compile(u'\d{2}:\d{2}:\d{2}');
+        timeT = patternTime.findall(TimeStr)
+        if len(timeT)>0:
+            d = date
+            if timeT[0] > '23:40:00':
+                delta = datetime.timedelta(days=1) 
+                d += delta 
+                return d
+        if not timeT:
+            return datetime.datetime.strptime(TimeStr,"%Y-%m-%d").date()
+        else:
+            return datetime.datetime.strptime(timeD[0],"%Y-%m-%d").date()
         
     def getWDLRate(self, tdInfo):
         divS = tdInfo.findAll('div')
@@ -124,8 +142,8 @@ class SpiderSports500WCurrentBatch(BatchBase):
                 mid = line['mid']
                 match = dateInfo[2]+tds[0].a.contents[0]
                 date = datetime.datetime.strptime(dateInfo[1],"%Y-%m-%d").date()
-                mdate = datetime.datetime.strptime(line['pdate'],"%Y-%m-%d").date()
-                matchid = mdate.replace(u'-','')+match
+                mdate = self.getMDate(date,line['pendtime'])
+                matchid = mdate.isoformat().replace(u'-','')+match
                 mtime = datetime.datetime.strptime(line['pendtime'],"%Y-%m-%d %H:%M:%S")
                 matchtype = line['lg']
                 matchzhu = tds[3].a['title']
@@ -189,7 +207,7 @@ class SpiderSports500WCurrentBatch(BatchBase):
                                   singleFlag = singleFlag)
                 self.session.add(mi)
                 
-                m = self.session.query(MatchInfo).filter(MatchInfo.matchid == mi.matchid).first()
+                m = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == mi.matchid).first()
                 if m is not None:
                     m.matchTime = mi.mtime.time()
                     m.zhuRank = mi.zhuRank
@@ -205,5 +223,4 @@ class SpiderSports500WCurrentBatch(BatchBase):
             return False
     
 if __name__ == '__main__':  
-    SpiderSportsCurrentBatch().run()
-    SpiderSports500W.SpiderSports500WBatch().run()
+    SpiderSports500WCurrentBatch().run()

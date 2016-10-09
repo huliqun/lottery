@@ -7,11 +7,11 @@ Created on Thu Sep  1 16:45:49 2016
 import urllib
 import datetime
 import json
-from sqlalchemy import text
 
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
 from workserver.module.models import MatchInfoD
+import spiderSports500WCurrent
 
 class SpiderSportsCurrentBatch(BatchBase):
     def run(self):
@@ -49,6 +49,7 @@ class SpiderSportsCurrentBatch(BatchBase):
                 if matchInfos[match]['status'] != 'Selling':
                     continue
                 matchid = matchInfos[match]['date'].replace('-','') + matchInfos[match]['num']
+                singleFlag = '0'
                 if matchInfos[match].get('had') is not None:
                     wrate = float(matchInfos[match]['had']['h'])
                     drate = float(matchInfos[match]['had']['d'])
@@ -90,3 +91,4 @@ class SpiderSportsCurrentBatch(BatchBase):
     
 if __name__ == '__main__':  
     SpiderSportsCurrentBatch().run()
+    spiderSports500WCurrent.SpiderSports500WCurrentBatch().run()
