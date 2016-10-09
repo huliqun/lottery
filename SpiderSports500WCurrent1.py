@@ -7,21 +7,106 @@ Created on Thu Sep  1 16:45:49 2016
 import urllib
 import datetime
 import json
+from bs4 import BeautifulSoup
 from sqlalchemy import text
 
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
-from workserver.module.models import MatchInfoD
+from workserver.module.models import MatchInfoD, MatchInfo500D
 
-class SpiderSportsCurrentBatch(BatchBase):
+class SpiderSports500WCurrentBatch(BatchBase):
     def run(self):
         self.initialize()
-        self.getMatch()
-#        match_date = S5W.getMatchDate()
-#        S5W.get500Wan(match_date)
-#        dataSync()
+        urlid500W = 'http://trade.500.com/jczq/?date='+SysUtil.getToday().isoformat()+'&playtype=both'
+        content500W = urllib.request.urlopen(urlid500W,timeout = 10).read()
+        message500W = content500W.decode('gbk')
+        soup500W = BeautifulSoup(message500W, 'html.parser')
+        tb500Wdate = soup500W.findAll('div','bet_date')
+        for i in range(0,len(tb500Wdate)):
+            dateInfo = self.getDate(tb500Wdate[i].contents[0])
+            tb500Wtb = soup500W.findAll('table','bet_table')
+            trs500W = tb500Wtb[i].findAll('tr')
+            self.getMatchSync(trs500W,dateInfo,i)
+                
+     def getDate(self, dataStr):
+        patternWeek=re.compile(u'[\u4e00-\u9fa5]{3}');
+        patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
+        weekday = ''
+        text = patternWeek.findall(dataStr)[0]
+        if text == u'星期一':
+            weekday = u'周一'
+        if text == u'星期二':
+            weekday = u'周二'
+        if text == u'星期三':
+            weekday = u'周三'
+        if text == u'星期四':
+            weekday = u'周四'
+        if text == u'星期五':
+            weekday = u'周五'
+        if text == u'星期六':
+            weekday = u'周六'
+        if text == u'星期日':
+            weekday = u'周日'
+        return [text,patternDate.findall(dataStr)[0],weekday]       
+    
         self.release()
         
+    def getWDLRate(self, tdInfo):
+        divS = tdInfo.findAll('div')
+        spans = divS[0].findAll('span')
+        rate=(0.00,0.00,0.00)
+        rateF=(0.00,0.00,0.00)
+        if len(spans) == 3:
+            rate=(float(spans[0]['data-sp']),float(spans[1]['data-sp']),float(spans[2]['data-sp']))
+            
+        spansF = divS[1].findAll('span')
+        if len(spansF) == 3:
+            rateF = (float(spansF[0]['data-sp']),float(spansF[1]['data-sp']),float(spansF[2]['data-sp']))
+        return [rate,rateF]
+        
+    def getNum(self, NumStr):
+        if NumStr is None:
+            return '0'
+        patternNum=re.compile('\[(\d+)\]');
+        NumT = patternNum.findall(NumStr)
+        if not NumT:
+            return 0
+        else:
+            return int(NumT[0])
+    
+    def getScore(self, ScoreStr):
+        if ScoreStr is None:
+            return ['','']
+        patternScore=re.compile('(\d+):(\d+)');
+        ScoreT = patternScore.findall(ScoreStr)
+        if not ScoreT:
+            return ['','']
+        else:
+            return [int(ScoreT[0][0]),int(ScoreT[0][1])]
+
+    def getMResult(self, ScoreR):
+        mResult = ''
+        if ScoreR[0] > ScoreR[1]:
+            mResult = 'W'
+        elif ScoreR[0] == ScoreR[1]:
+            mResult = 'D'
+        else:
+            mResult = 'L'
+        return mResult
+    
+    def getMResultF(self, ScoreR,fixScore):
+        fixResult = ''
+        try:
+            if ScoreR[0] + fixScore > ScoreR[1]:
+                fixResult = 'W'
+            elif ScoreR[0] + fixScore == ScoreR[1]:
+                fixResult = 'D'
+            else:
+                fixResult = 'L'
+        except Exception as ex:
+            pass
+        return fixResult
+
     def getMinRate(self, my_list):
         minNum = my_list[0]
         if minNum > 40:
@@ -31,62 +116,94 @@ class SpiderSportsCurrentBatch(BatchBase):
                 minNum = i
         return minNum
         
-    def getMatch(self):
-        urlM = "http://i.sporttery.cn/odds_calculator/get_odds?i_format=json&i_callback=getData&poolcode[]=hhad&poolcode[]=had&_=1460170422871"   
+    def getMatchSync(self,trs500W,dateInfo,num):
         try:
-#            self.session.execute(text('truncate table tbl_matchinfod'))
-            self.session.query(MatchInfoD).delete()
-            self.session.flush()
-            content = urllib.request.urlopen(urlM,timeout = 10).read()
-            message = content.decode('gbk')
-            message = message.replace('getData(','')
-            message = message.replace(');','')
-            decode = json.loads(message)
-            matchInfos=decode['data']
-            for match in matchInfos:
-                wrate = drate = lrate = wrateS = drateS = lrateS = 0.0
-                fixScore = '0'
-                if matchInfos[match]['status'] != 'Selling':
-                    continue
-                matchid = matchInfos[match]['date'].replace('-','') + matchInfos[match]['num']
-                if matchInfos[match].get('had') is not None:
-                    wrate = float(matchInfos[match]['had']['h'])
-                    drate = float(matchInfos[match]['had']['d'])
-                    lrate = float(matchInfos[match]['had']['a'])
-                    singleFlag = matchInfos[match]['had']['single']
-                minrate = self.getMinRate( (wrate,drate,lrate) )
-                if matchInfos[match].get('hhad') is not None:
-                    fixScore = matchInfos[match]['hhad']['fixedodds']
-                    wrateS = float(matchInfos[match]['hhad']['h'])
-                    drateS = float(matchInfos[match]['hhad']['d'])
-                    lrateS = float(matchInfos[match]['hhad']['a'])
-                minrateS = self.getMinRate( (wrateS,drateS,lrateS) )
+            for line in trs500W:
+                tds = line.findAll('td')
                 
-                mi = MatchInfoD(matchid = matchid,
-                                match = matchInfos[match]['num'],
-                                date = datetime.datetime.strptime(matchInfos[match]['date'], '%Y-%m-%d').date(),
-                                matchtype = matchInfos[match]['l_cn'],
-                                matchtypename = matchInfos[match]['l_cn_abbr'],
-                                matchzhu = matchInfos[match]['h_cn'],
-                                matchke = matchInfos[match]['a_cn'],
-                                status = matchInfos[match]['status'],
-                                wrate = wrate,
-                                drate = drate,
-                                lrate = lrate,
-                                minrate = minrate,
-                                fixScore = fixScore,
-                                wrateS = wrateS,
-                                drateS = drateS,
-                                lrateS = lrateS,
-                                minrateS = minrateS,
-                                singleFlag = singleFlag)
+                mid = line['mid']
+                match = dateInfo[2]+tds[0].a.contents[0]
+                date = datetime.datetime.strptime(dateInfo[1],"%Y-%m-%d").date()
+                mdate = datetime.datetime.strptime(line['pdate'],"%Y-%m-%d").date()
+                matchid = mdate.replace(u'-','')+match
+                mtime = datetime.datetime.strptime(line['pendtime'],"%Y-%m-%d %H:%M:%S")
+                matchtype = line['lg']
+                matchzhu = tds[3].a['title']
+                zhuRank = self.getNum(tds[3].span.text)
+                
+                matchke = tds[5].a['title']
+                keRank = self.getNum(tds[5].span.text)
+                rankDValue = zhuRank - keRank
+                if zhuRank == 0:
+                    rankDValue = 4
+                rates = self.getWDLRate(tds[7]) 
+                wrate,drate,lrate=rates[0]        
+                wrateS,drateS,lrateS=rates[1]
+                minrate = self.getMinRate( (rates[0][0], rates[0][1], rates[0][2]) )
+                minrateS  = self.getMinRate( (rates[1][0], rates[1][1], rates[1][2]) )
+                               
+                fixScore = int(tds[6].findAll('p')[1].text)
+                singleFlag = '0'
+                if tds[0].has_attr('class'):
+                    singleFlag = '1'
+                
+                zhuScore = ''
+                keScore = ''
+                mResult = ''
+                fixResult = ''
+                status = '0'
+                if len(tds[4].text) > 0:
+                    scores = self.getScore(tds[4].text)
+                    zhuScore = scores[0]
+                    keScore = scores[1]
+                    mResult = self.getMResult(scores)
+                    fixResult = self.getMResultF(scores,fixScore)
+                    status = '1'
+                
+                mi = MatchInfo500D(matchid = matchid,
+                                  mid = mid,
+                                  match = match,
+                                  date = date,
+                                  mdate = mdate,
+                                  mtime = mtime,
+                                  matchtype = matchtype,
+                                  matchzhu = matchzhu,
+                                  zhuRank = zhuRank,
+                                  matchke = matchke,
+                                  keRank = keRank,
+                                  rankDValue = rankDValue,
+                                  zhuScore = zhuScore,
+                                  keScore = keScore,
+                                  mResult = mResult,
+                                  status = status,
+                                  wrate = wrate,
+                                  drate = drate,
+                                  lrate = lrate,
+                                  minrate = minrate,
+                                  fixScore = fixScore,
+                                  fixResult = fixResult,
+                                  wrateS = wrateS,
+                                  drateS = drateS,
+                                  lrateS = lrateS,
+                                  minrateS = minrateS,
+                                  singleFlag = singleFlag)
                 self.session.add(mi)
+                
+                m = self.session.query(MatchInfo).filter(MatchInfo.matchid == mi.matchid).first()
+                if m is not None:
+                    m.matchTime = mi.mtime.time()
+                    m.zhuRank = mi.zhuRank
+                    m.keRank = mi.keRank
+                    m.rankDValue = mi.rankDValue
+                self.session.flush()
+                
             self.session.commit()
             
             return True
         except Exception as ex:
             SysUtil.exceptionPrint(self.logger, ex)
-            return False        
+            return False
     
 if __name__ == '__main__':  
     SpiderSportsCurrentBatch().run()
+    SpiderSports500W.SpiderSports500WBatch().run()
