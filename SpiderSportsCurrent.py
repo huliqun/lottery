@@ -13,8 +13,6 @@ from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
 from workserver.module.models import MatchInfoD
 
-import SpiderSports500W
-
 class SpiderSportsCurrentBatch(BatchBase):
     def run(self):
         self.initialize()
@@ -92,4 +90,3 @@ class SpiderSportsCurrentBatch(BatchBase):
     
 if __name__ == '__main__':  
     SpiderSportsCurrentBatch().run()
-    SpiderSports500W.SpiderSports500WBatch().run()
