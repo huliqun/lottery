@@ -1,5 +1,0 @@
-export default{
-  DOPOST:"DO_POST_FILE",
-  DOABORT:"DO_ABORT_FILE",
-  DODELETE:"DO_DELETE_FILE"
-}

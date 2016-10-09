@@ -1,238 +1,209 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 21 09:49:31 2016
+Created on Thu Sep  1 16:45:49 2016
 
-@author: huliqun
+@author: Administrator
 """
 import urllib
-import urllib2
-import string
-import re
-import pandas as pd
-import time
-from sqlalchemy import *
-import json
-import random
-import sqlite3 
 import datetime
-import BeautifulSoup
-#dbName = './matchDData.db'
-dbName = 'D:/WinPython-32bit-2.7.10.3/work/sportsWeb/matchDData.db'
-engine = create_engine('sqlite:///'+dbName, echo=False)
+import re
+from bs4 import BeautifulSoup
+from sqlalchemy import text
 
-def getMatchDate():
-    try:    
-        d = datetime.datetime.now()
-#        delta = datetime.timedelta(days=1) 
-#        d -= delta  
-        return d.strftime("%Y-%m-%d")          
-    except Exception as e:
-        print e
-        return None
+from workserver.util import SysUtil
+from workserver.batch.BatchBase import BatchBase
+from workserver.module.models import MatchInfoD, MatchInfo500D
+
+class SpiderSports500WCurrentBatch(BatchBase):
+    def run(self):
+        self.initialize()
+        urlid500W = 'http://trade.500.com/jczq/?date='+SysUtil.getToday().isoformat()+'&playtype=both'
+        content500W = urllib.request.urlopen(urlid500W,timeout = 10).read()
+        message500W = content500W.decode('gbk')
+        soup500W = BeautifulSoup(message500W, 'html.parser')
+        tb500Wdate = soup500W.findAll('div','bet_date')
+        for i in range(0,len(tb500Wdate)):
+            dateInfo = self.getDate(tb500Wdate[i].contents[0])
+            tb500Wtb = soup500W.findAll('table','bet_table')
+            trs500W = tb500Wtb[i].findAll('tr')
+            self.getMatchSync(trs500W,dateInfo,i)
+                
+    def getDate(self, dataStr):
+        patternWeek=re.compile(u'[\u4e00-\u9fa5]{3}');
+        patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
+        weekday = ''
+        text = patternWeek.findall(dataStr)[0]
+        if text == u'星期一':
+            weekday = u'周一'
+        if text == u'星期二':
+            weekday = u'周二'
+        if text == u'星期三':
+            weekday = u'周三'
+        if text == u'星期四':
+            weekday = u'周四'
+        if text == u'星期五':
+            weekday = u'周五'
+        if text == u'星期六':
+            weekday = u'周六'
+        if text == u'星期日':
+            weekday = u'周日'
+        return [text,patternDate.findall(dataStr)[0],weekday]       
     
-    return None
-
-def getMinRate(my_list):
-    minNum = my_list[0]
-    if minNum > 40:
-        return 0.00
-    for i in my_list:
-        if i < minNum:
-            minNum = i
-    return minNum
-
-
-def getDate(dataStr):
-    patternWeek=re.compile(u'[\u4e00-\u9fa5]{3}');
-    patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
-    weekday = ''
-    text = patternWeek.findall(dataStr)[0]
-    if text == u'星期一':
-        weekday = u'周一'
-    if text == u'星期二':
-        weekday = u'周二'
-    if text == u'星期三':
-        weekday = u'周三'
-    if text == u'星期四':
-        weekday = u'周四'
-    if text == u'星期五':
-        weekday = u'周五'
-    if text == u'星期六':
-        weekday = u'周六'
-    if text == u'星期日':
-        weekday = u'周日'
-    return [text,patternDate.findall(dataStr)[0],weekday]
-
-def getMDate(date,TimeStr):
-    patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');
-    timeD = patternDate.findall(TimeStr)
-    patternTime=re.compile(u'\d{2}:\d{2}:\d{2}');
-    timeT = patternTime.findall(TimeStr)
-    if len(timeT)>0:
-        if timeT[0] > '23:40:00':
-            d = datetime.datetime.strptime(date,"%Y-%m-%d")
-            delta = datetime.timedelta(days=1) 
-            d += delta 
-            return d.strftime("%Y-%m-%d")
-    if not timeT:
-        return TimeStr
-    else:
-        return timeD[0]
-
-def getMTime(TimeStr):
-    patternTime=re.compile(u'\d{2}:\d{2}:\d{2}');
-    timeT = patternTime.findall(TimeStr)
-    if not timeT:
-        return TimeStr
-    else:
-        return timeT[0]
+        self.release()
         
-def getNum(NumStr):
-    if NumStr is None:
-        return '0'
-    patternNum=re.compile(u'\[(\d+)\]');
-    NumT = patternNum.findall(NumStr)
-    if not NumT:
-        return '0'
-    else:
-        return NumT[0]
-
-def getScore(ScoreStr):
-    if ScoreStr is None:
-        return ['','']
-    patternScore=re.compile(u'(\d+):(\d+)');
-    ScoreT = patternScore.findall(ScoreStr)
-    if not ScoreT:
-        return ['','']
-    else:
-        return [ScoreT[0][0],ScoreT[0][1]]
-
-def getMResult(ScoreR):
-    mResult = ''
-    if int(ScoreR[0]) > int(ScoreR[1]):
-        mResult = 'W'
-    elif int(ScoreR[0]) == int(ScoreR[1]):
-        mResult = 'D'
-    else:
-        mResult = 'L'
-    return mResult
-
-def getMResultF(ScoreR,fixScore):
-    fixResult = ''
-    if int(ScoreR[0]) + int(eval(fixScore)) > int(ScoreR[1]):
-        fixResult = 'W'
-    elif int(ScoreR[0]) + int(eval(fixScore)) == int(ScoreR[1]):
-        fixResult = 'D'
-    else:
-        fixResult = 'L'
-    return fixResult
-
-def getWDLRate(tdInfo):
-    divS = tdInfo.findAll('div')
-    spans = divS[0].findAll('span')
-    rate=(u'0.00',u'0.00',u'0.00')
-    rateF=(u'0.00',u'0.00',u'0.00')
-    if len(spans) == 3:
-        rate=(spans[0]['data-sp'],spans[1]['data-sp'],spans[2]['data-sp'])
+    def getWDLRate(self, tdInfo):
+        divS = tdInfo.findAll('div')
+        spans = divS[0].findAll('span')
+        rate=(0.00,0.00,0.00)
+        rateF=(0.00,0.00,0.00)
+        if len(spans) == 3:
+            rate=(float(spans[0]['data-sp']),float(spans[1]['data-sp']),float(spans[2]['data-sp']))
+            
+        spansF = divS[1].findAll('span')
+        if len(spansF) == 3:
+            rateF = (float(spansF[0]['data-sp']),float(spansF[1]['data-sp']),float(spansF[2]['data-sp']))
+        return [rate,rateF]
         
-    spansF = divS[1].findAll('span')
-    if len(spansF) == 3:
-        rateF = (spansF[0]['data-sp'],spansF[1]['data-sp'],spansF[2]['data-sp'])
-    return [rate,rateF]
-
-def getMatchSync(trs500W,dateInfo,num):
-    try:
-        df = pd.DataFrame( columns=['matchid','mid','match', 'date', 'mdate', 'mtime', 'matchtype','matchzhu','zhuRank','matchke','keRank','rankDValue','zhuHScore','keHScore','zhuScore','keScore','mResult','status',
-                                'wrate','drate','lrate','minrate','fixScore','fixResult','wrateS','drateS','lrateS','minrateS','allmax','allresult','singleFlag']).set_index('matchid')
-        for line in trs500W:
-            tds = line.findAll('td')
-            
-            mid = line['mid']
-            match = dateInfo[2]+tds[0].a.contents[0]
-            date = dateInfo[1]
-            mdate = getMDate(date,line['pendtime'])
-            matchid = mdate.replace(u'-','')+match
-            mtime = getMTime(line['pendtime'])
-            matchtype = line['lg']
-            matchzhu = tds[3].a['title']
-            zhuRank = getNum(tds[3].span.string)
-            
-            matchke = tds[5].a['title']
-            keRank = getNum(tds[5].span.string)
-            rankDValue = int(zhuRank) - int(keRank)
-            if int(zhuRank) == 0:
-                rankDValue = 4
-            rates=getWDLRate(tds[7]) 
-            wrate,drate,lrate=rates[0]        
-            wrateS,drateS,lrateS=rates[1]
-            minrate = getMinRate( (string.atof( rates[0][0]),string.atof( rates[0][1]),string.atof( rates[0][2])) )
-            minrateS  = getMinRate( (string.atof( rates[1][0] ),string.atof( rates[1][1] ),string.atof( rates[1][2] )) )  
-            
-            if minrate <= minrateS:
-                allmax = minrateS
-                allresult = 'S'
-            else:
-                allmax = minrate
-                allresult = 'N'
-                           
-            fixScore = tds[6].findAll('p','concede t_line green')[0]['span']
-            singleFlag = '0'
-            if tds[0].attrs:
-                if tds[0]['class']=='danguan_game_icon':
-                    singleFlag = '1'
-            
-            zhuScore = ''
-            keScore = ''
-            mResult = ''
-            fixResult = ''
-            status = '0'
-            if tds[4].attrs:
-                scores = getScore(tds[4]['a'])
-                zhuScore = scores[0]
-                keScore = scores[1]
-                mResult = getMResult(scores)
-                fixResult = getMResultF(scores,fixScore)
-                status = '1'
-            
-            line = pd.DataFrame([[ matchid,mid,match,date,mdate,mtime,matchtype,
-                  matchzhu,zhuRank,matchke,keRank,rankDValue,'','',zhuScore,
-                  keScore,mResult,status,wrate,drate,lrate,minrate,fixScore,
-                  fixResult,wrateS,drateS,lrateS,minrateS,allmax,allresult,singleFlag]],
-                  columns=['matchid','mid','match', 'date', 'mdate', 'mtime', 'matchtype',
-                  'matchzhu','zhuRank','matchke','keRank','rankDValue','zhuHScore','keHScore','zhuScore',
-                  'keScore','mResult','status','wrate','drate','lrate','minrate','fixScore',
-                  'fixResult','wrateS','drateS','lrateS','minrateS','allmax','allresult','singleFlag']
-                  ).set_index('matchid')
-            df= df.append(line)
-        
-        if num == 0:
-            df.to_sql('score_data_500',engine,if_exists='replace')
+    def getNum(self, NumStr):
+        if NumStr is None:
+            return '0'
+        patternNum=re.compile('\[(\d+)\]');
+        NumT = patternNum.findall(NumStr)
+        if not NumT:
+            return 0
         else:
-            df.to_sql('score_data_500',engine,if_exists='append')
-        
-        return True
-    except Exception as e:
-        print e
-        return False
+            return int(NumT[0])
+    
+    def getScore(self, ScoreStr):
+        if ScoreStr is None:
+            return ['','']
+        patternScore=re.compile('(\d+):(\d+)');
+        ScoreT = patternScore.findall(ScoreStr)
+        if not ScoreT:
+            return ['','']
+        else:
+            return [int(ScoreT[0][0]),int(ScoreT[0][1])]
 
-def get500Wan(date):
-    urlid500W = 'http://trade.500.com/jczq/?date='+date+'&playtype=both'
-    content500W = urllib2.urlopen(urlid500W,timeout = 2).read()
-    message500W = content500W.decode('gbk').encode('utf8')
-#    fp = open("test.txt",'w')
-#    fp.write(message500W)
-#    fp.close()
-#    fp = open("test.txt",'r')
-#    soup500W = BeautifulSoup.BeautifulSOAP(fp.read())
-#    fp.close
-    soup500W = BeautifulSoup.BeautifulSOAP(message500W)
-    tb500Wdate = soup500W.findAll('div','bet_date')
-    for i in range(0,len(tb500Wdate)):
-        dateInfo = getDate(tb500Wdate[i].contents[0])
-        tb500Wtb = soup500W.findAll('table','bet_table')
-        trs500W = tb500Wtb[i].findAll('tr')
-        getMatchSync(trs500W,dateInfo,i)
+    def getMResult(self, ScoreR):
+        mResult = ''
+        if ScoreR[0] > ScoreR[1]:
+            mResult = 'W'
+        elif ScoreR[0] == ScoreR[1]:
+            mResult = 'D'
+        else:
+            mResult = 'L'
+        return mResult
+    
+    def getMResultF(self, ScoreR,fixScore):
+        fixResult = ''
+        try:
+            if ScoreR[0] + fixScore > ScoreR[1]:
+                fixResult = 'W'
+            elif ScoreR[0] + fixScore == ScoreR[1]:
+                fixResult = 'D'
+            else:
+                fixResult = 'L'
+        except Exception as ex:
+            pass
+        return fixResult
+
+    def getMinRate(self, my_list):
+        minNum = my_list[0]
+        if minNum > 40:
+            return 0.00
+        for i in my_list:
+            if i < minNum:
+                minNum = i
+        return minNum
         
-if __name__ =="__main__":
-    match_date = getMatchDate()
-    get500Wan(match_date)
+    def getMatchSync(self,trs500W,dateInfo,num):
+        try:
+            for line in trs500W:
+                tds = line.findAll('td')
+                
+                mid = line['mid']
+                match = dateInfo[2]+tds[0].a.contents[0]
+                date = datetime.datetime.strptime(dateInfo[1],"%Y-%m-%d").date()
+                mdate = datetime.datetime.strptime(line['pdate'],"%Y-%m-%d").date()
+                matchid = mdate.replace(u'-','')+match
+                mtime = datetime.datetime.strptime(line['pendtime'],"%Y-%m-%d %H:%M:%S")
+                matchtype = line['lg']
+                matchzhu = tds[3].a['title']
+                zhuRank = self.getNum(tds[3].span.text)
+                
+                matchke = tds[5].a['title']
+                keRank = self.getNum(tds[5].span.text)
+                rankDValue = zhuRank - keRank
+                if zhuRank == 0:
+                    rankDValue = 4
+                rates = self.getWDLRate(tds[7]) 
+                wrate,drate,lrate=rates[0]        
+                wrateS,drateS,lrateS=rates[1]
+                minrate = self.getMinRate( (rates[0][0], rates[0][1], rates[0][2]) )
+                minrateS  = self.getMinRate( (rates[1][0], rates[1][1], rates[1][2]) )
+                               
+                fixScore = int(tds[6].findAll('p')[1].text)
+                singleFlag = '0'
+                if tds[0].has_attr('class'):
+                    singleFlag = '1'
+                
+                zhuScore = ''
+                keScore = ''
+                mResult = ''
+                fixResult = ''
+                status = '0'
+                if len(tds[4].text) > 0:
+                    scores = self.getScore(tds[4].text)
+                    zhuScore = scores[0]
+                    keScore = scores[1]
+                    mResult = self.getMResult(scores)
+                    fixResult = self.getMResultF(scores,fixScore)
+                    status = '1'
+                
+                mi = MatchInfo500D(matchid = matchid,
+                                  mid = mid,
+                                  match = match,
+                                  date = date,
+                                  mdate = mdate,
+                                  mtime = mtime,
+                                  matchtype = matchtype,
+                                  matchzhu = matchzhu,
+                                  zhuRank = zhuRank,
+                                  matchke = matchke,
+                                  keRank = keRank,
+                                  rankDValue = rankDValue,
+                                  zhuScore = zhuScore,
+                                  keScore = keScore,
+                                  mResult = mResult,
+                                  status = status,
+                                  wrate = wrate,
+                                  drate = drate,
+                                  lrate = lrate,
+                                  minrate = minrate,
+                                  fixScore = fixScore,
+                                  fixResult = fixResult,
+                                  wrateS = wrateS,
+                                  drateS = drateS,
+                                  lrateS = lrateS,
+                                  minrateS = minrateS,
+                                  singleFlag = singleFlag)
+                self.session.add(mi)
+                
+                m = self.session.query(MatchInfo).filter(MatchInfo.matchid == mi.matchid).first()
+                if m is not None:
+                    m.matchTime = mi.mtime.time()
+                    m.zhuRank = mi.zhuRank
+                    m.keRank = mi.keRank
+                    m.rankDValue = mi.rankDValue
+                self.session.flush()
+                
+            self.session.commit()
+            
+            return True
+        except Exception as ex:
+            SysUtil.exceptionPrint(self.logger, ex)
+            return False
+    
+if __name__ == '__main__':  
+    SpiderSportsCurrentBatch().run()
+    SpiderSports500W.SpiderSports500WBatch().run()
