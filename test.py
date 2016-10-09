@@ -14,8 +14,8 @@ import urllib
 #url = 'http://127.0.0.1:8000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=222222&gambleFlag=1'
 #url = 'http://127.0.0.1:8000/sports/webService/getMatchResult?userid=9a7cdc479b8706657096e845769a3807&date=2016-04-19'
-url = 'http://127.0.0.1:8000/sports/webService/getAccountLog?userid=222222'
-#url = 'http://127.0.0.1:8888/sports/webService/getdealer?userid=222222'
+#url = 'http://127.0.0.1:8000/sports/webService/getAccountLog?userid=222222'
+url = 'http://127.0.0.1:8888/sports/webService/getdealer?userid=222222'
 #url = 'http://127.0.0.1:8888/sports/webService/dealwithdealer?userid=222222&dealerid=1'
 #url = 'http://127.0.0.1:8888/sports/webService/userReg?userid=39429f547fce78c5b4f63dee0c4185f1&username=zzz&phone=15555555555&local=%E5%93%88%E5%93%88&IDNo=111111&accounttype=1'
 try:

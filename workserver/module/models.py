@@ -87,7 +87,16 @@ class Dealer(Base):
     straightlost = Column(Integer, default=0)
     rule = Column(String(100))
     desc = Column(Text)
-
+    
+class DealerMatch(Base):
+    __tablename__ = 'tbl_dealermatch'
+    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    date = Column(Date())
+    matchAID = Column(String(50))
+    matchAResult = Column(String(10))
+    matchBID = Column(String(50))
+    matchBResult = Column(String(10))
+    
 class MatchInfo(Base):
     __tablename__ = 'tbl_matchinfo'
     matchid = Column(String(50), primary_key=True)

@@ -13,7 +13,7 @@ from workserver.util import LogUtil
 from workserver.util import SysUtil
 
 from workserver.service import userRegSRV, payMoneySRV, setBaseMoneySRV, getCurrentResultSRV, getGambleResultSRV,\
-        getAccountLogSRV
+        getAccountLogSRV, getdealerSRV
 
 
 LogUtil.initLog()
@@ -29,6 +29,7 @@ app.add_route('/sports/webService/setBaseMoney', setBaseMoneySRV.setBaseMoneyRes
 app.add_route('/sports/webService/getCurrentResult', getCurrentResultSRV.getCurrentResultResource())
 app.add_route('/sports/webService/getGambleResult', getGambleResultSRV.getGambleResultResource())
 app.add_route('/sports/webService/getAccountLog', getAccountLogSRV.getAccountLogResource())
+app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())
 
 # Useful for debugging problems in your API; works with pdb.set_trace(). You
 # can also use Gunicorn to host your app. Gunicorn can be configured to
