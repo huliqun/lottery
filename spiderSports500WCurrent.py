@@ -7,11 +7,12 @@ Created on Thu Sep  1 16:45:49 2016
 import urllib
 import datetime
 import re
+import random
 from bs4 import BeautifulSoup
 
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
-from workserver.module.models import MatchInfoD, MatchInfo500D
+from workserver.module.models import MatchInfoD, MatchInfo500D, Dealer, DealerMatch
 
 class SpiderSports500WCurrentBatch(BatchBase):
     def run(self):
@@ -29,6 +30,37 @@ class SpiderSports500WCurrentBatch(BatchBase):
             tb500Wtb = soup500W.findAll('table','bet_table')
             trs500W = tb500Wtb[i].findAll('tr')
             self.getMatchSync(trs500W,dateInfo,i)
+        
+        self.getDealerMatch()
+        self.release()
+            
+    def getDealerMatch(self):
+        dealers = self.session.query(Dealer).all()
+        
+        for d in dealers:
+            if len(self.session.query(DealerMatch).filter(DealerMatch.dealerid == d.uid).all()) > 0:
+                continue
+            
+            if d.uid == 1:
+                matches = self.session.query(MatchInfoD).\
+                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
+                    filter(MatchInfoD.wrate >= 2.0).\
+                    filter(MatchInfoD.wrate <= 3.0).all()
+            elif d.uid == 2:
+                matches = self.session.query(MatchInfoD).\
+                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
+                    filter(MatchInfoD.wrate >= 1.0).\
+                    filter(MatchInfoD.wrate <= 2.5).all()
+            elif d.uid == 3:
+                matches = self.session.query(MatchInfoD).\
+                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
+                    filter(MatchInfoD.wrate >= 1.5).\
+                    filter(MatchInfoD.wrate <= 2.5).all()
+        
+            if len(matches) > 1:
+                choice = random.sample(matches,2)
+                dealDealerMatch(choice[0],choice[1],userid,dealerid) 
+        
                 
     def getDate(self, dataStr):
         patternWeek=re.compile(u'[\u4e00-\u9fa5]{3}');
@@ -50,8 +82,6 @@ class SpiderSports500WCurrentBatch(BatchBase):
         if text == u'星期日':
             weekday = u'周日'
         return [text,patternDate.findall(dataStr)[0],weekday]       
-    
-        self.release()
     
     def getMDate(self, date, TimeStr):
         patternDate=re.compile(u'\d{4}-\d{2}-\d{2}');

@@ -91,11 +91,13 @@ class Dealer(Base):
 class DealerMatch(Base):
     __tablename__ = 'tbl_dealermatch'
     uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    dealerid = Column(BigInteger)
     date = Column(Date())
     matchAID = Column(String(50))
     matchAResult = Column(String(10))
     matchBID = Column(String(50))
     matchBResult = Column(String(10))
+    winFlag = Column(String(10))
     
 class MatchInfo(Base):
     __tablename__ = 'tbl_matchinfo'
