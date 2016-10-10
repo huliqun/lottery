@@ -38,28 +38,44 @@ class SpiderSports500WCurrentBatch(BatchBase):
         dealers = self.session.query(Dealer).all()
         
         for d in dealers:
-            if len(self.session.query(DealerMatch).filter(DealerMatch.dealerid == d.uid).all()) > 0:
+            if len(self.session.query(DealerMatch).\
+                filter(DealerMatch.dealerid == d.uid).\
+                filter(DealerMatch.date == SysUtil.getTomorrow()).all()) > 0:
                 continue
             
             if d.uid == 1:
                 matches = self.session.query(MatchInfoD).\
-                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
-                    filter(MatchInfoD.wrate >= 2.0).\
-                    filter(MatchInfoD.wrate <= 3.0).all()
+                    filter(MatchInfoD.date == SysUtil.getTomorrow()).\
+                    filter(MatchInfoD.minrate >= 2.0).\
+                    filter(MatchInfoD.minrate <= 3.0).all()
             elif d.uid == 2:
                 matches = self.session.query(MatchInfoD).\
-                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
-                    filter(MatchInfoD.wrate >= 1.0).\
-                    filter(MatchInfoD.wrate <= 2.5).all()
+                    filter(MatchInfoD.date == SysUtil.getTomorrow()).\
+                    filter(MatchInfoD.minrate >= 1.0).\
+                    filter(MatchInfoD.minrate <= 2.5).all()
             elif d.uid == 3:
                 matches = self.session.query(MatchInfoD).\
-                    filter(MatchInfoD.date == SysUtil.getTomorrow).\
-                    filter(MatchInfoD.wrate >= 1.5).\
-                    filter(MatchInfoD.wrate <= 2.5).all()
+                    filter(MatchInfoD.date == SysUtil.getTomorrow()).\
+                    filter(MatchInfoD.minrate >= 1.5).\
+                    filter(MatchInfoD.minrate <= 2.5).all()
         
             if len(matches) > 1:
                 choice = random.sample(matches,2)
-                dealDealerMatch(choice[0],choice[1],userid,dealerid) 
+                rateAList = (choice[0].wrate,choice[0].drate,choice[0].lrate)
+                minRateAIdex = SysUtil.getMinIndex(rateAList)
+                      
+                rateBList = (choice[1].wrate,choice[1].drate,choice[1].lrate)
+                minRateBIdex = SysUtil.getMinIndex(rateBList)
+    
+                dm = DealerMatch(dealerid = d.uid,
+                    date = SysUtil.getTomorrow(),
+                    matchAID = choice[0].matchid,
+                    matchAResult = SysUtil.getMatchResult(minRateAIdex),
+                    matchBID = choice[1].matchid,
+                    matchBResult = SysUtil.getMatchResult(minRateBIdex)
+                    )
+                self.session.add(dm)
+                self.session.commit()
         
                 
     def getDate(self, dataStr):

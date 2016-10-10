@@ -53,7 +53,7 @@ class PayLog(Base):
 
 class AccountRunning(Base):
     __tablename__ = 'tbl_account_running'
-    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    uid = Column(Integer, primary_key=True, autoincrement=True)
     userid = Column(String(100))
     date = Column(Date())
     useMoney = Column(Float, default=0.0)
@@ -65,7 +65,7 @@ class AccountRunning(Base):
     
 class MatchData(Base):
     __tablename__ = 'tbl_matchdata'
-    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    uid = Column(Integer, primary_key=True, autoincrement=True)
     userid = Column(String(100))
     date = Column(Date())
     singleFlag = Column(String(10))
@@ -81,7 +81,7 @@ class MatchData(Base):
 
 class Dealer(Base):
     __tablename__ = 'tbl_dealer'
-    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    uid = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(30))
     straightwin = Column(Integer, default=0)
     straightlost = Column(Integer, default=0)
@@ -90,7 +90,7 @@ class Dealer(Base):
     
 class DealerMatch(Base):
     __tablename__ = 'tbl_dealermatch'
-    uid = Column(BigInteger, primary_key=True, autoincrement=True)
+    uid = Column(Integer, primary_key=True, autoincrement=True)
     dealerid = Column(BigInteger)
     date = Column(Date())
     matchAID = Column(String(50))
