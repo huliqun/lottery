@@ -11,15 +11,12 @@ import json
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
 from workserver.module.models import MatchInfoD
-import spiderSports500WCurrent
+import spiderSports500WCurrent, SpiderSports, SpiderSports500W
 
 class SpiderSportsCurrentBatch(BatchBase):
     def run(self):
         self.initialize()
         self.getMatch()
-#        match_date = S5W.getMatchDate()
-#        S5W.get500Wan(match_date)
-#        dataSync()
         self.release()
         
     def getMinRate(self, my_list):
@@ -92,3 +89,5 @@ class SpiderSportsCurrentBatch(BatchBase):
 if __name__ == '__main__':  
     SpiderSportsCurrentBatch().run()
     spiderSports500WCurrent.SpiderSports500WCurrentBatch().run()
+    SpiderSports.SpiderSportsBatch().run()
+    SpiderSports500W.SpiderSports500WBatch().run()

@@ -166,8 +166,6 @@ class SpiderSportsBatch(BatchBase):
                                 infoUrl = rateurl)
                     self.session.add(m)
                     
-                    
-                    
             self.session.commit()
             return True
         except Exception as ex:
