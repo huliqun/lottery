@@ -133,3 +133,11 @@ def getMatchResult(indexM):
         return 'D'   
     if indexM == 2:
         return 'L'
+        
+def getResultIndex(result):
+    if result == 'W':
+        return 0
+    if result == 'D':
+        return 1 
+    if result == 'L':
+        return 2

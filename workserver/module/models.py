@@ -41,6 +41,7 @@ class UserData(Base):
     __tablename__ = 'tbl_userdata'
     userid = Column(String(100), primary_key=True, nullable=False)
     basemoney = Column(Float, default=0.0)
+    mode = Column(String(10), default='A')
      
 class PayLog(Base):
     __tablename__ = 'tbl_paylog'

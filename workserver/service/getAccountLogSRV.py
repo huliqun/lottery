@@ -32,29 +32,29 @@ class getAccountLogResource(ServiceBase):
                            })
         accountMsg = {}
         try:
-            result = self.session.execute(text('select basemoney from tbl_userdata where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['baseMoney'] = result[0][0]
+            result = self.session.execute(text('select basemoney from tbl_userdata where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['baseMoney'] = result[0]
             
-            result = self.session.execute(text('select expdate from tbl_user where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['expdate'] = result[0][0]
+            result = self.session.execute(text('select expdate from tbl_user where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['expdate'] = result[0]
 
-            result = self.session.execute(text('select min(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['fromDate'] = result[0][0]
+            result = self.session.execute(text('select min(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['fromDate'] = result[0]
 
-            result = self.session.execute(text('select max(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['toDate'] = result[0][0]
+            result = self.session.execute(text('select max(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['toDate'] = result[0]
 
-            result = self.session.execute(text('select max(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['maxUse'] = result[0][0]
+            result = self.session.execute(text('select max(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['maxUse'] = result[0]
 
-            result = self.session.execute(text('select sum(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['sumUse'] = result[0][0]
+            result = self.session.execute(text('select sum(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['sumUse'] = result[0]
 
-            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] })
-            accountMsg['sumCommission'] = result[0][0]
+            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['sumCommission'] = result[0]
         except Exception as ex:
             SysUtil.exceptionPrint(self.logger, ex)
-            self.errorReturn(GLBConfig.API_ERROR, '初始金额未设置.')
+            self.errorReturn(GLBConfig.SYSTEM_ERROR, '系统错误.')
         
         self.result['data'] = maData
         self.result['accountMsg'] = accountMsg 

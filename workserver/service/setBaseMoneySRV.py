@@ -29,8 +29,13 @@ class setBaseMoneyResource(ServiceBase):
             self.session.query(MatchData).filter(MatchData.userid == user.userid).update({MatchData.status: '0'})
             self.session.flush()
             
+            if 'mode' in req_para.keys():
+                mode = req_para['mode']
+            else:
+                mode = 'A'
             udata = UserData(userid = user.userid,
-                             basemoney = SysUtil.moneyNumFormat(req_para['basemoney']))
+                             basemoney = SysUtil.moneyNumFormat(req_para['basemoney']),
+                             mode = mode)
             self.session.add(udata)
             self.session.commit()
         except Exception as ex:

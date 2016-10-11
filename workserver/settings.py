@@ -14,8 +14,8 @@ dbEchoFlag = False
 #DOMAIN = ''
 
 
-log_file = '/Users/huliqun/work/111111'
-#log_file = 'D:/111111'
+#log_file = '/Users/huliqun/work/111111'
+log_file = 'D:/111111'
 #log_file = '/home/pwork/workserver/log/serverlog'
 
 #dbUrl='sqlite:///sys.db'

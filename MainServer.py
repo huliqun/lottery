@@ -30,6 +30,7 @@ app.add_route('/sports/webService/getCurrentResult', getCurrentResultSRV.getCurr
 app.add_route('/sports/webService/getGambleResult', getGambleResultSRV.getGambleResultResource())
 app.add_route('/sports/webService/getAccountLog', getAccountLogSRV.getAccountLogResource())
 app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())
+#app.add_route('/sports/webService/dealwithdealer', dealwithdealerSRV.DealWithDealerResource())
 
 # Useful for debugging problems in your API; works with pdb.set_trace(). You
 # can also use Gunicorn to host your app. Gunicorn can be configured to

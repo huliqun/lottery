@@ -27,16 +27,38 @@ class getCurrentResultResource(ServiceBase):
         maData = []
         if matches:
             for m in matches:
-                matInfo = self.session.query(MatchInfoD).ilter(MatchInfoD.matchid == m.matchAID).first()
-                maData.append({'match': m.matchAID,
-                               'matchtype': matInfo.matchtype,
-                               'zhu': matInfo.matchzhu,
-                               'ke': matInfo.matchke,
-                               'wrate': matInfo.wrate,
-                               'drate': matInfo.drate,
-                               'lrate': matInfo.lrate,
-                               'result': m.matchAResult,
-                               'money': m.money})
+                if m.singleFlag == GLBConfig.M_SINGLE:
+                    matInfo = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == m.matchAID).first()
+                    maData.append({'match': m.matchAID,
+                       'matchtype': matInfo.matchtype,
+                       'zhu': matInfo.matchzhu,
+                       'ke': matInfo.matchke,
+                       'wrate': matInfo.wrate,
+                       'drate': matInfo.drate,
+                       'lrate': matInfo.lrate,
+                       'result': m.matchAResult,
+                       'money': m.money})
+                else:
+                    mA = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchAID ).first()
+                    mB = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchBID ).first()
+                    maData.append({'matchAID': m.matchAID,
+                                   'matchAResult': m.matchAResult,
+                                   'matchAtype':mA.matchtypename,
+                                   'matchAzhu':mA.matchzhu,
+                                   'matchAke':mA.matchke,
+                                   'matchAw':mA.wrate,
+                                   'matchAd':mA.drate,
+                                   'matchAl':mA.lrate,
+                                   'matchBID':m.matchBID,
+                                   'matchBResult':m.matchBResult,
+                                   'matchBtype':mB.matchtypename,
+                                   'matchBzhu':mB.matchzhu,
+                                   'matchBke':mB.matchke,
+                                   'matchBw':mB.wrate,
+                                   'matchBd':mB.drate,
+                                   'matchBl':mB.lrate,
+                                   'money': m.money})
+                    
             self.result['data'] = maData
         else:
             self.errorReturn(GLBConfig.API_ERROR, '无数据.')
