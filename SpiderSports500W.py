@@ -21,10 +21,6 @@ class SpiderSports500WBatch(BatchBase):
         delta = datetime.timedelta(days=2) 
         start = end - delta
         
-        self.session.query(MatchInfo500).\
-            filter(MatchInfo500.date >= start).delete()
-        self.session.flush()
-        
         for i in range((end - start).days+1):  
             day = start + datetime.timedelta(days=i)  
             self.logger.info(day.strftime("%Y-%m-%d"))
@@ -181,6 +177,11 @@ class SpiderSports500WBatch(BatchBase):
                     mResult = self.getMResult(scores)
                     fixResult = self.getMResultF(scores,fixScore)
                     status = '1'
+                    
+                m5 = self.session.query(MatchInfo500).filter(MatchInfo500.matchid == matchid).first()
+                if m5:
+                    self.session.delete(m5)
+                    self.session.flush()
                 
                 mi = MatchInfo500(matchid = matchid,
                                   mid = mid,

@@ -97,6 +97,7 @@ class SpiderSportsBatch(BatchBase):
                         continue
                     if tds[7].a is None:
                         continue
+                    matchid = tds[0].text.replace('-','')+tds[1].text
                     singleF = re.search(r'(single\.gif)',repr(tds[3]))
                     singleFlag = '0'
                     if singleF:
@@ -128,7 +129,13 @@ class SpiderSportsBatch(BatchBase):
                     minrateS  = self.getMinRate( (rates[1][1],rates[1][2],rates[1][3]) )  
                     
                     totalScore = int(score.groups()[0]) + int(score.groups()[1])
-                    m = MatchInfo(matchid = tds[0].text.replace('-','')+tds[1].text,
+                    
+                    mp = self.session.query(MatchInfo).filter(MatchInfo.matchid == matchid).first()
+                    if mp:
+                        self.session.delete(mp)
+                        self.session.flush()
+                    
+                    m = MatchInfo(matchid = matchid,
                                 match = tds[1].text,
                                 date = datetime.datetime.strptime(tds[0].text, '%Y-%m-%d').date(),
                                 matchtype = tds[2]['title'],
@@ -165,16 +172,15 @@ class SpiderSportsBatch(BatchBase):
                                 s7 = rates[2][7],
                                 infoUrl = rateurl)
                     self.session.add(m)
+                    self.session.commit()
                     
-            self.session.commit()
             return True
         except Exception as ex:
+            print(urlM)
             SysUtil.exceptionPrint(self.logger, ex)
             return False    
         
     def fetchUrl(self, start, end, start_d, end_d):
-        if start == end:
-            return
         for num in range(start,end+1):
             self.logger.info(num)
             urlFech='http://info.sporttery.cn/football/match_result.php?page='+str(num)+'&search_league=0&start_date='+start_d.isoformat()+'&end_date='+end_d.isoformat()+'&dan='
@@ -188,11 +194,11 @@ class SpiderSportsBatch(BatchBase):
         self.session.query(MatchInfo).\
             filter(MatchInfo.date >= start_d).\
             filter(MatchInfo.date <= end_d).delete()
-        self.session.flush()
+        self.session.commit()
         
         d = self.session.query(func.max(MatchInfo.date)).scalar()
         if d is not None:
-            start_d = d
+            start_d = d + datetime.timedelta(days=1)
             
         data = {}
         data['start_date'] = start_d.isoformat()
