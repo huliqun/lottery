@@ -11,7 +11,7 @@ from sqlalchemy.engine import reflection
 
 from workserver.util import SysUtil
 from workserver.util import GLBConfig
-from workserver.module.models import User, UserData, PayLog, AccountRunning, MatchData, Dealer, MatchInfo, MatchInfo500, MatchInfoD, MatchInfo500D, DealerMatch
+from workserver.module.models import User, UserData, PayLog, AccountRunning, MatchData, Dealer, MatchInfo, MatchInfo500, MatchInfoD, MatchInfo500D, DealerMatch, MatchInfo500Time
 
 # 为了解决mysql gone away尝试使用NullPool和设置POOL_RECYCLE为5s
 #engine = create_engine(DB_CONNECT_STRING, encoding=DB_ENCODING, echo=DB_ECHO, pool_recycle=POOL_RECYCLE, poolclass=NullPool)
@@ -67,6 +67,10 @@ def InitTables(engine):
         
     if 'tbl_dealermatch' not in tables:
         DealerMatch.__table__.create(engine)
+        db.commit()
+        
+    if 'tbl_matchinfo_500Time' not in tables:
+        MatchInfo500Time.__table__.create(engine)
         db.commit()
 
 if __name__ == '__main__':

@@ -249,3 +249,17 @@ class MatchInfo500D(Base):
     lrateS = Column(Float, default=0.0)
     minrateS = Column(Float, default=0.0)
     singleFlag = Column(String(10)) 
+    
+class MatchInfo500Time(Base):
+    __tablename__ = 'tbl_matchinfo_500Time'
+    matchid = Column(String(50), primary_key=True)
+    match = Column(String(30))
+    mtime = Column(DateTime())
+    matchtype = Column(String(50))
+    matchzhu = Column(String(50))
+    matchke = Column(String(50))
+    zhuScore = Column(Integer)
+    keScore = Column(Integer)
+    zhuHScore = Column(Integer)
+    keHScore = Column(Integer)
+    mststus = Column(String(50))
