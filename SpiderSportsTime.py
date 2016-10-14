@@ -72,9 +72,10 @@ class SpiderSportsTimeBatch(BatchBase):
         self.logger.info('finish')
                 
     def getScore(self, ScoreStr):
+        print(ScoreStr)
         if ScoreStr is None:
             return ['','']
-        patternScore=re.compile('(\d+):(\d+)');
+        patternScore=re.compile('(\d+) - (\d+)');
         ScoreT = patternScore.findall(ScoreStr)
         if not ScoreT:
             return ['','']
