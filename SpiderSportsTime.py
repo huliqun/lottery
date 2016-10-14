@@ -18,12 +18,12 @@ from workserver.batch.BatchBase import BatchBase
 from workserver.module.models import MatchInfo500Time
 
 glb_browser = webdriver.PhantomJS()
+glb_browser.get('http://live.500.com/')
 
 class SpiderSportsTimeBatch(BatchBase):
     def run(self):
         self.initialize()
         year = str(datetime.datetime.now().year) + '-'
-        glb_browser.get('http://live.500.com/')
         the_page = glb_browser.page_source
         soup = BeautifulSoup(the_page, 'html.parser')
         table = soup.find('table', id='table_match')
@@ -72,7 +72,6 @@ class SpiderSportsTimeBatch(BatchBase):
         self.logger.info('finish')
                 
     def getScore(self, ScoreStr):
-        print(ScoreStr)
         if ScoreStr is None:
             return ['','']
         patternScore=re.compile('(\d+) - (\d+)');
