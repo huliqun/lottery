@@ -19,13 +19,15 @@ import urllib
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=222222&username=aa&phone=18698729472&local=123456&IDNo=111111&accounttype=1'
 #url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=222222&basemoney=100.00&mode=A'
 #url = 'http://127.0.0.1:8000/sports/webService/getCurrentResult?userid=222222'
-#url = 'http://127.0.0.1:8000/sports/webService/getdealer?userid=222222'
-#url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
+#url = 'http://127.0.0.1:8000/sports/webService/getdealer?userid=90d2db021d10cb072cd2ae220632a00d'
+#url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=90d2db021d10cb072cd2ae220632a00d&gambleFlag=1&dealerid=1'
+#url = 'http://127.0.0.1:8000/sports/webService/getGameResult?userid=90d2db021d10cb072cd2ae220632a00d'
+url = 'http://127.0.0.1:8000/sports/webService/getMatches'
 
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=33333&username=aa&phone=18698729473&local=123456&IDNo=111111&accounttype=1'
 #url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=33333&basemoney=100.00&mode=B'
 #url = 'http://127.0.0.1:8000/sports/webService/getCurrentResult?userid=33333'
-url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=87a46d5e822dd80f386925db24abfb23&gambleFlag=1&dealerid=3'
+#url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=33333&gambleFlag=1&dealerid=1'
 
 #url = 'http://127.0.0.1:8000/sports/webService/getAccountLog?userid=111111'
 

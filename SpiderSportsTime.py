@@ -23,7 +23,7 @@ class SpiderSportsTimeBatch(BatchBase):
     def run(self):
         self.initialize()
         year = str(datetime.datetime.now().year) + '-'
-	glb_browser.get('http://live.500.com/')
+        glb_browser.get('http://live.500.com/')
         the_page = glb_browser.page_source
         soup = BeautifulSoup(the_page, 'html.parser')
         table = soup.find('table', id='table_match')

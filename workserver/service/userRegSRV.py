@@ -20,9 +20,9 @@ class userRegResource(ServiceBase):
         if 'userid' not in req_para.keys():
             self.errorReturn(GLBConfig.API_ERROR,'userid 不存在.')
         if 'username' not in req_para.keys():
-            self.errorReturn(GLBConfig.API_ERROR,'用户名不存在.')
+            self.errorReturn(GLBConfig.API_ERROR,'username不存在.')
         if 'phone' not in req_para.keys():
-            self.errorReturn(GLBConfig.API_ERROR,'电话不存在.')
+            self.errorReturn(GLBConfig.API_ERROR,'phone不存在.')
         
         if 'accounttype' not in req_para.keys():
             accounttype = '0' #0 业主版 #1 彩民版
@@ -32,10 +32,6 @@ class userRegResource(ServiceBase):
         user = self.session.query(User).filter(User.userid == req_para['userid']).first()
         if user is not None:
             self.errorReturn(GLBConfig.API_ERROR ,'用户已经存.')
-
-        user = self.session.query(User).filter(User.phone == req_para['phone']).first()
-        if user is not None:
-            self.errorReturn(GLBConfig.API_ERROR, '用户已经存.')
                 
         try:
             d = datetime.datetime.now()
