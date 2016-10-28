@@ -13,7 +13,7 @@ from workserver.util import LogUtil
 from workserver.util import SysUtil
 
 from workserver.service import userRegSRV, payMoneySRV, setBaseMoneySRV, getCurrentResultSRV, getGambleResultSRV,\
-        getAccountLogSRV, getdealerSRV
+        getAccountLogSRV, getdealerSRV, getGameResultSRV, getMatchesSRV
 
 
 LogUtil.initLog()
@@ -28,8 +28,11 @@ app.add_route('/sports/webService/payMoney', payMoneySRV.payMoneyResource())
 app.add_route('/sports/webService/setBaseMoney', setBaseMoneySRV.setBaseMoneyResource())
 app.add_route('/sports/webService/getCurrentResult', getCurrentResultSRV.getCurrentResultResource())
 app.add_route('/sports/webService/getGambleResult', getGambleResultSRV.getGambleResultResource())
+app.add_route('/sports/webService/getMatchResult', getGambleResultSRV.getGambleResultResource())
+app.add_route('/sports/webService/getGameResult', getGameResultSRV.getGameResultResource())
 app.add_route('/sports/webService/getAccountLog', getAccountLogSRV.getAccountLogResource())
 app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())
+app.add_route('/sports/webService/getMatches', getMatchesSRV.getMatchesResource())
 #app.add_route('/sports/webService/dealwithdealer', dealwithdealerSRV.DealWithDealerResource())
 
 # Useful for debugging problems in your API; works with pdb.set_trace(). You
