@@ -39,6 +39,7 @@ class GetDealerSRVResource(ServiceBase):
                            'matchBl':mB.lrate
                            })
         self.result['data'] = maData
+        print(self.result)
         req.context['result'] = self.result
         resp.set_header('Powered-By', 'huliquns@126.com')
         resp.status = falcon.HTTP_200

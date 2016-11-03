@@ -199,6 +199,8 @@ class getGambleResultResource(ServiceBase):
     
     def getMatchGroup(self, u, ud):
         tomorrow = SysUtil.getTomorrow()
+#            filter(or_(and_(MatchInfoD.date==tomorrow,MatchInfoD.matchTime < datetime.time(22,00,00)), 
+#                       and_(MatchInfoD.date==SysUtil.getToday(),MatchInfoD.matchTime >= datetime.time(22,00,00)) )).\
         matches = self.session.query(MatchInfoD).\
             filter(MatchInfoD.date==tomorrow).\
             filter(MatchInfoD.singleFlag == '1').\

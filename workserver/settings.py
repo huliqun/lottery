@@ -20,9 +20,9 @@ log_file = 'D:/111111'
 
 #dbUrl='sqlite:///sys.db'
 #dbUrl='mysql+pymysql://onwheelsact:password!Q2w@localhost:3306/onwheelsact?charset=utf8'
-#dbUrl='mysql+pymysql://root:123456@localhost:3306/worksp?charset=utf8'
+dbUrl='mysql+pymysql://root:@localhost:3306/lottery?charset=utf8'
 #dbUrl='mysql+pymysql://root:password@192.168.2.65:3306/worksp?charset=utf8'
-dbUrl='sqlite:///matchDData.db'
+#dbUrl='sqlite:///matchDData.db'
 
 #spyder config
 spyderErrorTimes = 5

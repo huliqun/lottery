@@ -18,4 +18,4 @@ MODE_A = 'A' #专家推荐
 MODE_B = 'B' #单管推中赔
 
 M_SINGLE = '1'
-M_DUAL = '2'
+M_DUAL = '1'

@@ -16,7 +16,7 @@ class User(Base):
     userid = Column(String(100), primary_key=True, nullable=False)
     username = Column(String(60), nullable=False)
     accounttype = Column(String(10), nullable=False)
-    phone = Column(String(60), nullable=False)
+    phone = Column(String(60))
     local = Column(String(250))
     IDNo = Column(String(250))
     _password = Column('password', String(64), default='')

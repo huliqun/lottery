@@ -22,54 +22,57 @@ glb_browser = webdriver.PhantomJS()
 class SpiderSportsTimeBatch(BatchBase):
     def run(self):
         self.initialize()
-        year = str(datetime.datetime.now().year) + '-'
-        glb_browser.get('http://live.500.com/')
-        the_page = glb_browser.page_source
-        soup = BeautifulSoup(the_page, 'html.parser')
-        table = soup.find('table', id='table_match')
-        trs = table.find('tbody').find_all('tr')
-        self.session.query(MatchInfo500Time).delete()
-        self.session.commit()
-        for line in trs:
-            tds = line.find_all('td')
-            if line.has_attr('time'):
-                mtime = datetime.datetime.strptime(line['time'],"%Y-%m-%d %H:%M:%S")
-            else:
-                mtime = datetime.datetime.strptime(year+tds[3].text,"%Y-%m-%d %H:%M")
+        try:
+            year = str(datetime.datetime.now().year) + '-'
+            the_page = glb_browser.page_source
+            soup = BeautifulSoup(the_page, 'html.parser')
+            table = soup.find('table', id='table_match')
+            trs = table.find('tbody').find_all('tr')
+            self.session.query(MatchInfo500Time).delete()
+            self.session.commit()
+            for line in trs:
+                tds = line.find_all('td')
+                if line.has_attr('time'):
+                    mtime = datetime.datetime.strptime(line['time'],"%Y-%m-%d %H:%M:%S")
+                else:
+                    mtime = datetime.datetime.strptime(year+tds[3].text,"%Y-%m-%d %H:%M")
+                    
+                matchid = mtime.strftime('%Y%m%d') + tds[0].text
+                match = tds[0].text
+                matchtype = tds[1].text
+                matchzhu = tds[5].find('a').text
+                matchke = tds[7].find('a').text
+                scores = tds[6].find_all('a')
+                if scores[0].text == '':
+                    zhuScore = ''
+                else:
+                    zhuScore = int(scores[0].text)
+                    
+                if scores[2].text == '':
+                    keScore = ''
+                else:
+                    keScore = int(scores[2].text)
+                    
+                hScore = self.getScore(tds[8].text)
                 
-            matchid = mtime.strftime('%Y%m%d') + tds[0].text
-            match = tds[0].text
-            matchtype = tds[1].text
-            matchzhu = tds[5].find('a').text
-            matchke = tds[7].find('a').text
-            scores = tds[6].find_all('a')
-            if scores[0].text == '':
-                zhuScore = ''
-            else:
-                zhuScore = int(scores[0].text)
-                
-            if scores[2].text == '':
-                keScore = ''
-            else:
-                keScore = int(scores[2].text)
-                
-            hScore = self.getScore(tds[8].text)
-            
-            m = MatchInfo500Time( matchid = matchid,
-                                  match = match,
-                                  mtime = mtime,
-                                  matchtype = matchtype,
-                                  matchzhu = matchzhu,
-                                  matchke = matchke,
-                                  zhuScore = zhuScore,
-                                  keScore = keScore,
-                                  zhuHScore = hScore[0],
-                                  keHScore = hScore[1],
-                                  mststus = tds[4].text )
-            self.session.add(m)
-            self.session.flush()
-        self.session.commit()
-        self.logger.info('finish')
+                m = MatchInfo500Time( matchid = matchid,
+                                      match = match,
+                                      mtime = mtime,
+                                      matchtype = matchtype,
+                                      matchzhu = matchzhu,
+                                      matchke = matchke,
+                                      zhuScore = zhuScore,
+                                      keScore = keScore,
+                                      zhuHScore = hScore[0],
+                                      keHScore = hScore[1],
+                                      mststus = tds[4].text )
+                self.session.add(m)
+                self.session.flush()
+            self.session.commit()
+            self.logger.info('finish')
+        except Exception as ex:
+            SysUtil.exceptionPrint(self.logger, ex)
+        self.release()
                 
     def getScore(self, ScoreStr):
         if ScoreStr is None:
@@ -82,7 +85,13 @@ class SpiderSportsTimeBatch(BatchBase):
             return [int(ScoreT[0][0]),int(ScoreT[0][1])]
         
         
-if __name__ == '__main__':  
+if __name__ == '__main__':
+    i = 0
+    glb_browser.get('http://live.500.com/')
     while True:
+        i +=1
+        if i % 20 == 0:
+            glb_browser.get('http://live.500.com/')
+            i = 0
         SpiderSportsTimeBatch().run()
         time.sleep(random.randint(20,40))

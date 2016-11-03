@@ -21,8 +21,7 @@ import urllib
 #url = 'http://127.0.0.1:8000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:8000/sports/webService/getdealer?userid=90d2db021d10cb072cd2ae220632a00d'
 #url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=90d2db021d10cb072cd2ae220632a00d&gambleFlag=1&dealerid=1'
-#url = 'http://127.0.0.1:8000/sports/webService/getGameResult?userid=90d2db021d10cb072cd2ae220632a00d'
-url = 'http://127.0.0.1:8000/sports/webService/getMatches'
+url = 'http://127.0.0.1:8000/sports/webService/getGameResult?userid=90d2db021d10cb072cd2ae220632a00d'
 
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=33333&username=aa&phone=18698729473&local=123456&IDNo=111111&accounttype=1'
 #url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=33333&basemoney=100.00&mode=B'

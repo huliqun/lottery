@@ -51,8 +51,8 @@ class JSONTranslator(object):
         # See also: PEP 3333
         if req.content_length in (None, 0):
             # Nothing to do
-            self.logger.info(req.headers)
-            self.logger.info('Message length is 0')
+#            self.logger.info(req.headers)
+#            self.logger.info('Message length is 0')
             return
             
         if req.content_type.split(';')[0] == 'application/json':
