@@ -26,7 +26,12 @@ class getGameResultResource(ServiceBase):
                     filter(MatchData.userid == u.userid).\
                     filter(MatchData.date >= SysUtil.getYesterday()).\
                     filter(MatchData.matchAID == MatchInfoD.matchid).\
+<<<<<<< HEAD
+                    filter(MatchInfoD.match == MatchInfo500Time.match).\
+                    order_by(MatchInfo500Time.mtime.desc()).all():
+=======
                     filter(MatchInfoD.match == MatchInfo500Time.match).all():
+>>>>>>> 15f55fdf81fd2ccb5f900ae0f98ad1958881261d
                 matches.append(m)
                 
             for md, mi, m in self.session.query(MatchData, MatchInfoD, MatchInfo500Time).\
@@ -34,7 +39,12 @@ class getGameResultResource(ServiceBase):
                     filter(MatchData.userid == u.userid).\
                     filter(MatchData.date >= SysUtil.getYesterday()).\
                     filter(MatchData.matchBID == MatchInfoD.matchid).\
+<<<<<<< HEAD
+                    filter(MatchInfoD.match == MatchInfo500Time.match).\
+                    order_by(MatchInfo500Time.mtime.desc()).all():
+=======
                     filter(MatchInfoD.match == MatchInfo500Time.match).all():
+>>>>>>> 15f55fdf81fd2ccb5f900ae0f98ad1958881261d
                 matches.append(m)
                 
         else:
