@@ -13,7 +13,7 @@ from workserver.util import LogUtil
 from workserver.util import SysUtil
 
 from workserver.service import userRegSRV, payMoneySRV, setBaseMoneySRV, getCurrentResultSRV, getGambleResultSRV,\
-        getAccountLogSRV, getdealerSRV, getGameResultSRV, getMatchesSRV
+        getMatchResultSRV, getAccountLogSRV, getdealerSRV, getGameResultSRV, getMatchesSRV
 
 
 LogUtil.initLog()
@@ -28,7 +28,7 @@ app.add_route('/sports/webService/payMoney', payMoneySRV.payMoneyResource())
 app.add_route('/sports/webService/setBaseMoney', setBaseMoneySRV.setBaseMoneyResource())
 app.add_route('/sports/webService/getCurrentResult', getCurrentResultSRV.getCurrentResultResource())
 app.add_route('/sports/webService/getGambleResult', getGambleResultSRV.getGambleResultResource())
-app.add_route('/sports/webService/getMatchResult', getGambleResultSRV.getGambleResultResource())
+app.add_route('/sports/webService/getMatchResult', getMatchResultSRV.getMatchResultResource())
 app.add_route('/sports/webService/getGameResult', getGameResultSRV.getGameResultResource())
 app.add_route('/sports/webService/getAccountLog', getAccountLogSRV.getAccountLogResource())
 app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())

@@ -26,7 +26,8 @@ class getGameResultResource(ServiceBase):
                     filter(MatchData.userid == u.userid).\
                     filter(MatchData.date >= SysUtil.getYesterday()).\
                     filter(MatchData.matchAID == MatchInfoD.matchid).\
-                    filter(MatchInfoD.match == MatchInfo500Time.match).all():
+                    filter(MatchInfoD.match == MatchInfo500Time.match).\
+                    order_by(MatchInfo500Time.mtime.desc()).all():
                 matches.append(m)
                 
             for md, mi, m in self.session.query(MatchData, MatchInfoD, MatchInfo500Time).\
@@ -34,7 +35,8 @@ class getGameResultResource(ServiceBase):
                     filter(MatchData.userid == u.userid).\
                     filter(MatchData.date >= SysUtil.getYesterday()).\
                     filter(MatchData.matchBID == MatchInfoD.matchid).\
-                    filter(MatchInfoD.match == MatchInfo500Time.match).all():
+                    filter(MatchInfoD.match == MatchInfo500Time.match).\
+                    order_by(MatchInfo500Time.mtime.desc()).all():
                 matches.append(m)
                 
         else:
