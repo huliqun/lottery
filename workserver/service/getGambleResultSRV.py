@@ -38,7 +38,11 @@ class getGambleResultResource(ServiceBase):
         if u.accounttype == GLBConfig.ATYPE_PERSION:
             if udata.mode == GLBConfig.MODE_A:
                 if 'dealerid' not in req_para.keys():
-                    self.errorReturn(GLBConfig.API_ERROR, 'dealerid 不存在.')
+                    if 'matchA' not in req_para.keys() \
+                            and 'AResult' not in req_para.keys() \
+                            and 'matchB' not in req_para.keys() \
+                            and 'BResult' not in req_para.keys():
+                        self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')
                 
         self.matchCalcMoney(u, udata, req_para)
         
@@ -119,7 +123,10 @@ class getGambleResultResource(ServiceBase):
             self.getMatchGroup(u, udata)
         elif u.accounttype == GLBConfig.ATYPE_PERSION:
             if udata.mode == GLBConfig.MODE_A:
-                self.getMatchModeA(u, udata, req_para['dealerid'])
+                if 'dealerid' in req_para.keys():
+                    self.getMatchModeA(u, udata, req_para['dealerid'])
+                if 'matchA' in req_para.keys():
+                    self.getMatchModeASelfChoice(u, udata, req_para['matchA'], req_para['AResult'], req_para['matchB'], req_para['BResult'])
             if udata.mode == GLBConfig.MODE_B:
                 self.getMatchModeB(u, udata)
         
@@ -317,6 +324,44 @@ class getGambleResultResource(ServiceBase):
                     matchAResult = matches.matchAResult,
                     matchBID = matches.matchBID,
                     matchBResult = matches.matchBResult,
+                    rate = rate,
+                    money = mMoney,
+                    singleFlag = '2')
+        self.session.add(md)
+        self.session.flush()
+        
+    def getMatchModeASelfChoice(self, u, udata, matchA, AResult, matchB, BResult):  
+        tomorrow = SysUtil.getTomorrow()
+        ma = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == matchA).first()
+        if ma is None:
+            self.errorReturn(GLBConfig.API_ERROR, '比赛不存在.')
+        mb = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == matchB).first()
+        if mb is None:
+            self.errorReturn(GLBConfig.API_ERROR, '比赛不存在.')
+        
+        listA = (ma.wrate, ma.drate, ma.lrate)
+        listB = (mb.wrate, mb.drate, mb.lrate)
+        
+        account = self.session.query(AccountRunning).\
+            filter(AccountRunning.userid == u.userid).\
+            filter(AccountRunning.status == GLBConfig.ENABLE).\
+            filter(AccountRunning.date < tomorrow).\
+            order_by(AccountRunning.date.desc()).first()
+            
+        money = 0.0
+        if account:
+            if account.riskMoney < 0:
+                money = account.riskMoney
+                
+        rate = listA[SysUtil.getResultIndex(AResult)] * listB[SysUtil.getResultIndex(BResult)]
+        mMoney = (udata.basemoney - money) / (rate-1.00)
+        
+        md = MatchData(userid = u.userid,
+                    date = tomorrow,
+                    matchAID = matchA,
+                    matchAResult = AResult,
+                    matchBID = matchB,
+                    matchBResult = BResult,
                     rate = rate,
                     money = mMoney,
                     singleFlag = '2')
