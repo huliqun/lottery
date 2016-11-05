@@ -103,21 +103,11 @@ def moneyNumFormat(money):
     return float(money)
     
 def getMinIndex(my_list):
-    minNum = my_list[0]
-    if minNum > 40:
-        return 1
-    for i in my_list:
-        if i < minNum:
-            minNum = i
+    minNum = min(my_list)
     return my_list.index(minNum)
 
 def getMaxIndex(my_list):
-    maxNum = my_list[0]
-    if maxNum > 40:
-        return 2
-    for i in my_list:
-        if i > maxNum:
-            maxNum = i
+    maxNum = max(my_list)
     return my_list.index(maxNum)
 
 def getMidIndex(my_list):

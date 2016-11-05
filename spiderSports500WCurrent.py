@@ -211,15 +211,19 @@ class SpiderSports500WCurrentBatch(BatchBase):
                 if tds[0].has_attr('class'):
                     singleFlag = '1'
                 
-                zhuScore = ''
-                keScore = ''
+                zhuScore = None
+                keScore = None
                 mResult = ''
                 fixResult = ''
                 status = '0'
                 if len(tds[4].text) > 0:
                     scores = self.getScore(tds[4].text)
                     zhuScore = scores[0]
+                    if not zhuScore:
+                        zhuScore = None
                     keScore = scores[1]
+                    if not keScore:
+                        keScore = None
                     mResult = self.getMResult(scores)
                     fixResult = self.getMResultF(scores,fixScore)
                     status = '1'

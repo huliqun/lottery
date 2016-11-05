@@ -23,6 +23,7 @@ class getAccountLogResource(ServiceBase):
         maData = []
         for a in self.session.query(AccountRunning).\
                 filter(AccountRunning.userid == req_para['userid']).\
+                filter(AccountRunning.status == GLBConfig.ENABLE).\
                 order_by(AccountRunning.date.desc()).all():
             maData.append({
                            'date': a.date.isoformat(),
@@ -36,21 +37,21 @@ class getAccountLogResource(ServiceBase):
             accountMsg['baseMoney'] = result[0]
             
             result = self.session.execute(text('select expdate from tbl_user where userid = :uid'), {'uid': req_para['userid'] }).first()
-            accountMsg['expdate'] = result[0]
+            accountMsg['expdate'] = result[0].isoformat()
 
-            result = self.session.execute(text('select min(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
-            accountMsg['fromDate'] = result[0]
+            result = self.session.execute(text('select min(date) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['fromDate'] = result[0].isoformat()
 
-            result = self.session.execute(text('select max(date) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
-            accountMsg['toDate'] = result[0]
+            result = self.session.execute(text('select max(date) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['toDate'] = result[0].isoformat()
 
-            result = self.session.execute(text('select max(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select max(usemoney) from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['maxUse'] = result[0]
 
-            result = self.session.execute(text('select sum(usemoney) from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select sum(usemoney) from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumUse'] = result[0]
 
-            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumCommission'] = result[0]
         except Exception as ex:
             SysUtil.exceptionPrint(self.logger, ex)

@@ -257,6 +257,7 @@ class getGambleResultResource(ServiceBase):
         money = ud.basemoney
         account = self.session.query(AccountRunning).\
             filter(AccountRunning.userid == u.userid).\
+            filter(AccountRunning.status == GLBConfig.ENABLE).\
             filter(AccountRunning.date < tomorrow).\
             order_by(AccountRunning.date.desc()).first()
         
@@ -298,6 +299,7 @@ class getGambleResultResource(ServiceBase):
         
         account = self.session.query(AccountRunning).\
             filter(AccountRunning.userid == u.userid).\
+            filter(AccountRunning.status == GLBConfig.ENABLE).\
             filter(AccountRunning.date < tomorrow).\
             order_by(AccountRunning.date.desc()).first()
             
