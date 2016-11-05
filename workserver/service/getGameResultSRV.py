@@ -39,9 +39,9 @@ class getGameResultResource(ServiceBase):
                 
         else:
             matches = self.session.query(MatchInfo500Time).\
-                        filter(MatchInfo500Time.mststus != '已完结').all()
+                        filter(MatchInfo500Time.mststus != '完').all()
             matchesB = self.session.query(MatchInfo500Time).\
-                        filter(MatchInfo500Time.mststus == '已完结').all()
+                        filter(MatchInfo500Time.mststus == '完').all()
             for m in matchesB:
                 matches.append(m)
             
