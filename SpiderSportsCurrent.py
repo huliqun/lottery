@@ -19,15 +19,6 @@ class SpiderSportsCurrentBatch(BatchBase):
         self.getMatch()
         self.release()
         
-    def getMinRate(self, my_list):
-        minNum = my_list[0]
-        if minNum > 40:
-            return 0.00
-        for i in my_list:
-            if i < minNum:
-                minNum = i
-        return minNum
-        
     def getMatch(self):
         urlM = "http://i.sporttery.cn/odds_calculator/get_odds?i_format=json&i_callback=getData&poolcode[]=hhad&poolcode[]=had&_=1460170422871"   
         try:
@@ -52,13 +43,13 @@ class SpiderSportsCurrentBatch(BatchBase):
                     drate = float(matchInfos[match]['had']['d'])
                     lrate = float(matchInfos[match]['had']['a'])
                     singleFlag = matchInfos[match]['had']['single']
-                minrate = self.getMinRate( (wrate,drate,lrate) )
+                minrate = min(wrate,drate,lrate)
                 if matchInfos[match].get('hhad') is not None:
                     fixScore = matchInfos[match]['hhad']['fixedodds']
                     wrateS = float(matchInfos[match]['hhad']['h'])
                     drateS = float(matchInfos[match]['hhad']['d'])
                     lrateS = float(matchInfos[match]['hhad']['a'])
-                minrateS = self.getMinRate( (wrateS,drateS,lrateS) )
+                minrateS = min(wrateS,drateS,lrateS)
                 
                 mi = MatchInfoD(matchid = matchid,
                                 match = matchInfos[match]['num'],

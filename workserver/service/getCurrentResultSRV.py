@@ -22,6 +22,7 @@ class getCurrentResultResource(ServiceBase):
         
         matches = self.session.query(MatchData).\
             filter(MatchData.date >= SysUtil.getToday()).\
+            filter(MatchData.status == GLBConfig.ENABLE).\
             filter(MatchData.userid == req_para['userid']).all()
         maData = []
         if matches:

@@ -17,11 +17,12 @@ import urllib
 #url = 'http://127.0.0.1:8000/sports/webService/getAccountLog?userid=111111' 获取账户流水信息
 
 #url = 'http://127.0.0.1:9000/sports/webService/userReg?userid=222222&username=aa&phone=18698729472&local=123456&IDNo=111111&accounttype=1'
-url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getdealer?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
 #url = 'http://127.0.0.1:9000/sports/webService/getGameResult?userid=222222'
+url = 'http://127.0.0.1:9000/sports/webService/getGameResult'
 
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=33333&username=aa&phone=18698729473&local=123456&IDNo=111111&accounttype=1'
 #url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=33333&basemoney=100.00&mode=B'

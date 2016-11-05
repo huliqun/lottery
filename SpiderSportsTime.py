@@ -44,12 +44,12 @@ class SpiderSportsTimeBatch(BatchBase):
                 matchke = tds[7].find('a').text
                 scores = tds[6].find_all('a')
                 if scores[0].text == '':
-                    zhuScore = ''
+                    zhuScore = None
                 else:
                     zhuScore = int(scores[0].text)
                     
                 if scores[2].text == '':
-                    keScore = ''
+                    keScore = None
                 else:
                     keScore = int(scores[2].text)
                     
@@ -76,11 +76,11 @@ class SpiderSportsTimeBatch(BatchBase):
                 
     def getScore(self, ScoreStr):
         if ScoreStr is None:
-            return ['','']
+            return [None,None]
         patternScore=re.compile('(\d+) - (\d+)');
         ScoreT = patternScore.findall(ScoreStr)
         if not ScoreT:
-            return ['','']
+            return [None,None]
         else:
             return [int(ScoreT[0][0]),int(ScoreT[0][1])]
         
