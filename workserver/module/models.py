@@ -83,6 +83,7 @@ class MatchData(Base):
 class Dealer(Base):
     __tablename__ = 'tbl_dealer'
     uid = Column(Integer, primary_key=True, autoincrement=True)
+    dealertype = Column(String(10)) 
     name = Column(String(30))
     straightwin = Column(Integer, default=0)
     straightlost = Column(Integer, default=0)
@@ -99,6 +100,7 @@ class DealerMatch(Base):
     matchBID = Column(String(50))
     matchBResult = Column(String(10))
     winFlag = Column(String(10))
+    matchdesc = Column(Text)
     
 class MatchInfo(Base):
     __tablename__ = 'tbl_matchinfo'

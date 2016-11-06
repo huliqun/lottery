@@ -20,5 +20,8 @@ MODE_B = 'B' #单管推中赔
 M_SINGLE = '1'
 M_DUAL = '2'
 
-ENABLE = '1'
 DISABLE = '0'
+ENABLE = '1'
+
+D_TYPE_C = '0' #计算机
+D_TYPE_H = '1' #人

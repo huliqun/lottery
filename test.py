@@ -20,15 +20,23 @@ import urllib
 #url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getdealer?userid=222222'
-#url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
-ecodeq = urllib.parse.urlencode({'userid': '222222',
-                  'gambleFlag': '1',
-                  'matchA': '20161107周日088',
+ecodeq = urllib.parse.urlencode({'dealerid': '4',
+                  'matchA': '20161108周一001',
                   'AResult': 'W',
-                  'matchB': '20161107周日092',
+                  'matchB': '20161108周一002',
                   'BResult': 'L',
+                  'desc': '111111111'
                   })
-url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
+url = 'http://127.0.0.1:9000/sports/webService/setDealerMatch?' + ecodeq
+#url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
+#ecodeq = urllib.parse.urlencode({'userid': '222222',
+#                  'gambleFlag': '1',
+#                  'matchA': '20161107周日088',
+#                  'AResult': 'W',
+#                  'matchB': '20161107周日092',
+#                  'BResult': 'L',
+#                  })
+#url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
 #url = 'http://127.0.0.1:9000/sports/webService/getGameResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getGameResult'
 

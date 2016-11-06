@@ -39,9 +39,9 @@ class getGambleResultResource(ServiceBase):
             if udata.mode == GLBConfig.MODE_A:
                 if 'dealerid' not in req_para.keys():
                     if 'matchA' not in req_para.keys() \
-                            and 'AResult' not in req_para.keys() \
-                            and 'matchB' not in req_para.keys() \
-                            and 'BResult' not in req_para.keys():
+                            or 'AResult' not in req_para.keys() \
+                            or 'matchB' not in req_para.keys() \
+                            or 'BResult' not in req_para.keys():
                         self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')
                 
         self.matchCalcMoney(u, udata, req_para)
@@ -326,6 +326,7 @@ class getGambleResultResource(ServiceBase):
                     matchBResult = matches.matchBResult,
                     rate = rate,
                     money = mMoney,
+                    dealerid = dealerid,
                     singleFlag = '2')
         self.session.add(md)
         self.session.flush()
