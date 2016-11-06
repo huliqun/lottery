@@ -88,7 +88,7 @@ class Dealer(Base):
     straightwin = Column(Integer, default=0)
     straightlost = Column(Integer, default=0)
     rule = Column(String(100))
-    desc = Column(Text)
+    dealerdesc = Column(Text)
     
 class DealerMatch(Base):
     __tablename__ = 'tbl_dealermatch'
