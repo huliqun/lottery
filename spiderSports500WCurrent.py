@@ -10,6 +10,7 @@ import re
 import random
 from bs4 import BeautifulSoup
 
+from workserver.util import GLBConfig
 from workserver.util import SysUtil
 from workserver.batch.BatchBase import BatchBase
 from workserver.module.models import MatchInfoD, MatchInfo500D, Dealer, DealerMatch
@@ -35,7 +36,7 @@ class SpiderSports500WCurrentBatch(BatchBase):
         self.release()
             
     def getDealerMatch(self):
-        dealers = self.session.query(Dealer).all()
+        dealers = self.session.query(Dealer).filter(Dealer.dealertype == GLBConfig.D_TYPE_C).all()
         
         for d in dealers:
             if len(self.session.query(DealerMatch).\
