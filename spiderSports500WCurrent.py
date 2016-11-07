@@ -73,7 +73,8 @@ class SpiderSports500WCurrentBatch(BatchBase):
                     matchAID = choice[0].matchid,
                     matchAResult = SysUtil.getMatchResult(minRateAIdex),
                     matchBID = choice[1].matchid,
-                    matchBResult = SysUtil.getMatchResult(minRateBIdex)
+                    matchBResult = SysUtil.getMatchResult(minRateBIdex),
+                    matchdesc = ''
                     )
                 self.session.add(dm)
                 self.session.commit()
