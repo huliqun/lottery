@@ -91,7 +91,12 @@ if __name__ == '__main__':
     while True:
         i +=1
         if i % 20 == 0:
-            glb_browser.get('http://live.500.com/')
+            try:
+                glb_browser.get('http://live.500.com/')
+            except Exception as ex:
+                print(ex)
+                time.sleep(random.randint(200))
+                continue
             i = 0
         SpiderSportsTimeBatch().run()
         time.sleep(random.randint(20,40))
