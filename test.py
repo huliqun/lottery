@@ -20,14 +20,14 @@ import urllib
 #url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getdealer?userid=222222'
-ecodeq = urllib.parse.urlencode({'dealerid': '4',
-                  'matchA': '20161108周一001',
-                  'AResult': 'W',
-                  'matchB': '20161108周一002',
-                  'BResult': 'L',
-                  'desc': '111111111'
-                  })
-url = 'http://127.0.0.1:9000/sports/webService/setDealerMatch?' + ecodeq
+#ecodeq = urllib.parse.urlencode({'dealerid': '4',
+#                  'matchA': '20161108周一001',
+#                  'AResult': 'W',
+#                  'matchB': '20161108周一002',
+#                  'BResult': 'L',
+#                  'desc': '111111111'
+#                  })
+#url = 'http://127.0.0.1:9000/sports/webService/setDealerMatch?' + ecodeq
 #url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
 #ecodeq = urllib.parse.urlencode({'userid': '222222',
 #                  'gambleFlag': '1',
@@ -46,10 +46,11 @@ url = 'http://127.0.0.1:9000/sports/webService/setDealerMatch?' + ecodeq
 #url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=33333&gambleFlag=1&dealerid=1'
 
 #url = 'http://127.0.0.1:9000/sports/webService/getAccountLog?userid=222222'
+url = 'http://218.61.0.136:9000/sports/webService/getAccountLog?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
 
 try:
      
-    response= urllib.request.urlopen(url,timeout = 2)
+    response= urllib.request.urlopen(url,timeout = 10)
     msg = response.read()
     print(msg)
 except urllib.error.HTTPError as e:

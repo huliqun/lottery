@@ -45,13 +45,13 @@ class getAccountLogResource(ServiceBase):
             result = self.session.execute(text('select max(date) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['toDate'] = result[0].isoformat()
 
-            result = self.session.execute(text('select max(usemoney) from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select max(usemoney) from tbl_account_running where status = "1" and  userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['maxUse'] = result[0]
 
-            result = self.session.execute(text('select sum(usemoney) from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select sum(usemoney) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumUse'] = result[0]
 
-            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running status = "1" and where userid = :uid'), {'uid': req_para['userid'] }).first()
+            result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumCommission'] = result[0]
         except Exception as ex:
             SysUtil.exceptionPrint(self.logger, ex)
