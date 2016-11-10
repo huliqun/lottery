@@ -32,6 +32,8 @@ class SpiderSportsTimeBatch(BatchBase):
             self.session.commit()
             for line in trs:
                 tds = line.find_all('td')
+                if len(tds) < 5:
+                    continue
                 if line.has_attr('time'):
                     mtime = datetime.datetime.strptime(line['time'],"%Y-%m-%d %H:%M:%S")
                 else:
