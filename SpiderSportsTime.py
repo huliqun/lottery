@@ -27,7 +27,7 @@ class SpiderSportsTimeBatch(BatchBase):
             the_page = glb_browser.page_source
             soup = BeautifulSoup(the_page, 'html.parser')
             table = soup.find('table', id='table_match')
-            if table：
+            if table:
                 trs = table.find('tbody').find_all('tr')
                 self.session.query(MatchInfo500Time).delete()
                 self.session.commit()
