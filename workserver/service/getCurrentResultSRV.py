@@ -36,13 +36,13 @@ class getCurrentResultResource(ServiceBase):
                        'wrate': matInfo.wrate,
                        'drate': matInfo.drate,
                        'lrate': matInfo.lrate,
-                       'result': m.mResult,
+                       'result': matInfo.mResult,
                        'money': m.money})
                 else:
                     mA = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchAID ).first()
                     mB = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchBID ).first()
                     maData.append({'matchAID': m.matchAID,
-                                   'matchAResult': m.mResult,
+                                   'matchAResult': mA.mResult,
                                    'matchAtype':mA.matchtypename,
                                    'matchAzhu':mA.matchzhu,
                                    'matchAke':mA.matchke,
@@ -50,7 +50,7 @@ class getCurrentResultResource(ServiceBase):
                                    'matchAd':mA.drate,
                                    'matchAl':mA.lrate,
                                    'matchBID':m.matchBID,
-                                   'matchBResult':m.mResult,
+                                   'matchBResult':mB.mResult,
                                    'matchBtype':mB.matchtypename,
                                    'matchBzhu':mB.matchzhu,
                                    'matchBke':mB.matchke,
