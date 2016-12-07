@@ -5,6 +5,7 @@ Created on Thu Sep  1 16:45:49 2016
 @author: Administrator
 """
 import urllib
+import urllib.request
 from bs4 import BeautifulSoup
 from sqlalchemy.sql import func
 import datetime
@@ -211,13 +212,16 @@ class SpiderSportsBatch(BatchBase):
         
     def getMatresult(self, start_d, end_d):
         self.session.query(MatchInfo).\
-            filter(MatchInfo.date >= start_d).\
-            filter(MatchInfo.date <= end_d).delete()
+            filter(MatchInfo.date == end_d).delete()
         self.session.commit()
         
         d = self.session.query(func.min(MatchInfo.date)).scalar()
         if d is not None:
+            print(d)
             end_d = d - datetime.timedelta(days=1)
+            
+        print(start_d)
+        print(end_d)
             
         data = {}
         data['start_date'] = start_d.isoformat()
