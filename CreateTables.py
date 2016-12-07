@@ -69,7 +69,7 @@ def InitTables(engine):
         DealerMatch.__table__.create(engine)
         db.commit()
         
-    if 'tbl_matchinfo_500Time' not in tables:
+    if 'tbl_matchinfo_500time' not in tables:
         MatchInfo500Time.__table__.create(engine)
         db.commit()
 

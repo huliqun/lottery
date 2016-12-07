@@ -1,0 +1,5 @@
+/ghostdriver.log
+/workserver/__pycache__
+/workserver/util/__pycache__
+/workserver/module/__pycache__
+/workserver/batch/__pycache__

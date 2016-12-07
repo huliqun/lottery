@@ -21,8 +21,9 @@ import SpiderSports500W
 class SpiderSportsBatch(BatchBase):
     def run(self):
         self.initialize()
-        end = datetime.date.today()
-        delta = datetime.timedelta(days=2) 
+#        end = datetime.date.today()
+        end = datetime.datetime.strptime('2015-09-27','%Y-%m-%d').date()
+        delta = datetime.timedelta(days=1000) 
         start = end - delta  
         
         self.getMatresult(start, end)
@@ -78,7 +79,17 @@ class SpiderSportsBatch(BatchBase):
                 rateC = (float(tddScore[1].text),float(tddScore[2].text),float(tddScore[3].text),
                         float(tddScore[4].text),float(tddScore[5].text),float(tddScore[6].text),
                         float(tddScore[7].text),float(tddScore[8].text))
-            return (rateA,rateB,rateC)
+            
+            trrHF = tbWDL[4].findAll('tr')
+            tddHF = trrHF[-1].findAll('td')
+            rateD = (99.99,99.99,99.99,99.99,99.99,99.99,99.99,99.99,99.99)
+            tmpRateHF = re.search("[\d]+\.[\d]+",repr(tddHF[1].text))
+            if tmpRateHF is not None:
+                rateD = (float(tddHF[1].text),float(tddHF[2].text),float(tddHF[3].text),
+                        float(tddHF[4].text),float(tddHF[5].text),float(tddHF[6].text),
+                        float(tddHF[7].text),float(tddHF[8].text),float(tddHF[9].text))
+                
+            return (rateA,rateB,rateC,rateD)
         except Exception as ex:
             SysUtil.exceptionPrint(self.logger, ex)
             return None    
@@ -170,13 +181,21 @@ class SpiderSportsBatch(BatchBase):
                                 s5 = rates[2][5],
                                 s6 = rates[2][6],
                                 s7 = rates[2][7],
+                                ww = rates[3][0],
+                                wd = rates[3][1],
+                                wl = rates[3][2],
+                                dw = rates[3][3],
+                                dd = rates[3][4],
+                                dl = rates[3][5],
+                                lw = rates[3][6],
+                                ld = rates[3][7],
+                                ll = rates[3][8],
                                 infoUrl = rateurl)
                     self.session.add(m)
                     self.session.commit()
                     
             return True
         except Exception as ex:
-            print(urlM)
             SysUtil.exceptionPrint(self.logger, ex)
             return False    
         
@@ -196,9 +215,9 @@ class SpiderSportsBatch(BatchBase):
             filter(MatchInfo.date <= end_d).delete()
         self.session.commit()
         
-        d = self.session.query(func.max(MatchInfo.date)).scalar()
+        d = self.session.query(func.min(MatchInfo.date)).scalar()
         if d is not None:
-            start_d = d + datetime.timedelta(days=1)
+            end_d = d - datetime.timedelta(days=1)
             
         data = {}
         data['start_date'] = start_d.isoformat()
@@ -235,4 +254,4 @@ class SpiderSportsBatch(BatchBase):
     
 if __name__ == '__main__':  
     SpiderSportsBatch().run()
-    SpiderSports500W.SpiderSports500WBatch().run()
+#    SpiderSports500W.SpiderSports500WBatch().run()
