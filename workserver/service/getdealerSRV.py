@@ -21,6 +21,9 @@ class GetDealerSRVResource(ServiceBase):
             mB = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchBID ).first()
             maData.append({'dealerid': m.dealerid,
                            'dealername': d.name,
+                           'dealtype': d.dealertype,
+                           'dealerdesc': d.dealerdesc,
+                           'matchdesc': m.matchdesc,
                            'matchAID': m.matchAID,
                            'matchAResult': m.matchAResult,
                            'matchAtype':mA.matchtypename,
