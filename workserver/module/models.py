@@ -79,6 +79,31 @@ class MatchData(Base):
     ResultMoney = Column(Float, default=0.0)
     dealerid = Column(Integer)
     status = Column(String(5), default='1')
+    
+class AccountRunningBatch(Base):
+    __tablename__ = 'tbl_account_running_batch'
+    uid = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(Date())
+    useMoney = Column(Float, default=0.0)
+    dResult = Column(Float, default=0.0)
+    riskMoney = Column(Float, default=0.0)
+    totalResult = Column(Float, default=0.0)
+    fixTotal = Column(Float, default=0.0)
+    status = Column(String(5), default='1')
+
+class MatchDataBatch(Base):
+    __tablename__ = 'tbl_matchdata_batch'
+    uid = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(Date())
+    singleFlag = Column(String(10))
+    matchAID = Column(String(50))
+    matchAResult = Column(String(10))
+    matchBID = Column(String(50))
+    matchBResult = Column(String(10))
+    rate = Column(Float, default=0.0)
+    money = Column(Float, default=0.0)
+    ResultMoney = Column(Float, default=0.0)
+    status = Column(String(5), default='1')    
 
 class Dealer(Base):
     __tablename__ = 'tbl_dealer'
