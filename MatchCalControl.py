@@ -51,7 +51,7 @@ def getMatchDraw(date):
             session.add(md3)
             session.commit()
             count += 1
-            if count > 1:
+            if count > 3:
                 break
     return count
 
@@ -61,7 +61,7 @@ def calMoney(date, money):
     if matches:
         base = matches[0].rate
         sumRPara = 1
-        for m in matches:
+        for m in matches[1:]:
             sumRPara += base/m.rate
         baseMoney = money / sumRPara
         for m in matches:
@@ -131,7 +131,7 @@ def calMatResult(date, account, basemoney):
 if __name__ == '__main__':
     clearData()
     basemoney = 1000.00
-    for date in dateRange('2016-01-01','2016-01-01'):
+    for date in dateRange('2015-01-01','2016-12-01'):
         money = basemoney
         totalResult = 0.00
         riskMoney = 0.00
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         account = session.query(AccountRunningBatch).order_by(AccountRunningBatch.date.desc()).first()
         if account:
             if account.riskMoney < 0:
-                money = ((-1)*account.riskMoney/(basemoney) + 1) * basemoney *matchCount/3
+                money = ((-1)*account.riskMoney/(basemoney) + 1) * basemoney *matchCount
                 if money < basemoney*0.8:
                     money = basemoney*0.8
 #            else:
