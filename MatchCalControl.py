@@ -51,7 +51,7 @@ def getMatchDraw(date):
             session.add(md3)
             session.commit()
             count += 1
-            if count > 3:
+            if count > 0:
                 break
     return count
 
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         account = session.query(AccountRunningBatch).order_by(AccountRunningBatch.date.desc()).first()
         if account:
             if account.riskMoney < 0:
-                money = ((-1)*account.riskMoney/(basemoney) + 1) * basemoney *matchCount
+                money = ((-1)*account.riskMoney/(basemoney) + 1) * basemoney *matchCount*1.5
                 if money < basemoney*0.8:
                     money = basemoney*0.8
 #            else:
