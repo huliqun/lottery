@@ -6,3 +6,4 @@
 /workserver/settings.py
 __pycache__
 /nginxConf/*.DS_Store
+/workserver/util/*.pyc
