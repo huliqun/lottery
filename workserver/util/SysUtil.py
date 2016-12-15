@@ -84,8 +84,11 @@ def random_word(length):
     return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
 
 def exceptionPrint(logger, ex):
-    logger.error(traceback.print_exc())
-    logger.error(ex)
+    if logger:
+        logger.error(traceback.print_exc())
+        logger.error(ex)
+    else:
+        print(ex)
 
 def getTomorrow():
     return datetime.date.today() + datetime.timedelta(days=1)
