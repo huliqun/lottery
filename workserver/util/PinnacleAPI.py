@@ -273,4 +273,268 @@ def GetTeaserOdds(teaserId, logger=None):
         SysUtil.exceptionPrint(logger, ex)
         return None
 
+def GetSpecialOdds(sportId, leagueIds=[], since=None, specialId=None, oddsFormat=None, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        params = {}
+        if sportId:
+            params['sportId'] = sportId
+        if leagueIds:
+            params['leagueIds'] = ','.join(leagueIds)
+        if since:
+            params['since'] = since
+        if specialId:
+            params['specialId'] = specialId
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        data = urllib.parse.urlencode(params)        
+        host = APIHOST
+        url = '/v1/odds/special?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None   
+
+def GetCurrencies(logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}       
+        host = APIHOST
+        url = '/v2/currencies'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None 
     
+def GetClientBalance(logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        host = APIHOST
+        url = '/v1/client/balance'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None 
+    
+def GetLine(sportId, leagueId, eventId , periodNumber, betType, oddsFormat, team=None, side=None, handicap=None, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)} 
+        params = {}
+        if sportId:
+            params['sportId'] = sportId
+        if leagueId:
+            params['leagueId'] = leagueId
+        if eventId:
+            params['eventId'] = eventId
+        if periodNumber:
+            params['periodNumber'] = periodNumber
+        if betType:
+            params['betType'] = betType
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        if team:
+            params['team'] = team
+        if side:
+            params['side'] = side
+        if handicap:
+            params['handicap'] = handicap
+        data = urllib.parse.urlencode(params)
+        host = APIHOST
+        url = '/v1/line?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+    
+def GetParlayLine(oddsFormat, legs, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password),
+                   'Content-Type': 'application/json',
+                   }
+        params = {}
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        if legs:
+            params['legs'] = legs
+        host = APIHOST
+        url = '/v1/line/parlay'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('POST', url, json.dumps(params).encode(), headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+    
+def GetTeaserLines(teaserId, oddsFormat, legs, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password),
+                   'Content-Type': 'application/json',
+                   }
+        params = {}
+        if teaserId:
+            params['teaserId'] = teaserId
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        if legs:
+            params['legs'] = legs
+        host = APIHOST
+        url = '/v1/line/teaser'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('POST', url, json.dumps(params).encode(), headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+
+def GetSpecialLines(specialId, contestantId, oddsFormat, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        params = {}
+        if specialId:
+            params['specialId'] = specialId
+        if contestantId:
+            params['contestantId'] = contestantId
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        data = urllib.parse.urlencode(params)
+        host = APIHOST
+        url = '/v1/line/special?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None  
+    
+def PlaceParlayBet(uniqueRequestId, acceptBetterLine, oddsFormat, riskAmount, roundRobinOptions, legs, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password),
+                   'Content-Type': 'application/json',
+                   }
+        params = {}
+        if uniqueRequestId:
+            params['uniqueRequestId'] = uniqueRequestId
+        if acceptBetterLine:
+            params['acceptBetterLine'] = acceptBetterLine
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        if riskAmount:
+            params['riskAmount'] = riskAmount
+        if roundRobinOptions:
+            params['roundRobinOptions'] = roundRobinOptions
+        if legs:
+            params['legs'] = legs
+        host = APIHOST
+        url = '/v1/bets/parlay'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('POST', url, json.dumps(params).encode(), headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None    
+    
+def PlaceTeaserBet(uniqueRequestId, teaserId, oddsFormat, winRiskStake, stake, legs, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password),
+                   'Content-Type': 'application/json',
+                   }
+        params = {}
+        if uniqueRequestId:
+            params['uniqueRequestId'] = uniqueRequestId
+        if teaserId:
+            params['teaserId'] = teaserId
+        if oddsFormat:
+            params['oddsFormat'] = oddsFormat
+        if winRiskStake:
+            params['winRiskStake'] = winRiskStake
+        if stake:
+            params['stake'] = stake
+        if legs:
+            params['legs'] = legs
+        host = APIHOST
+        url = '/v1/bets/teaser'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('POST', url, json.dumps(params).encode(), headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+
+def PlaceSpecialBet(bets, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password),
+                   'Content-Type': 'application/json',
+                   }
+        params = {}
+        if bets:
+            params['bets'] = bets
+        host = APIHOST
+        url = '/v1/bets/special'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('POST', url, json.dumps(params).encode(), headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+    
+def GetBets(betlist=None, betids=None, fromDate=None, toDate=None, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        params = {}
+        if betlist:
+            params['betlist'] = betlist
+        if betids:
+            params['betids'] = betids
+        if fromDate:
+            params['fromDate'] = fromDate
+        if toDate:
+            params['toDate'] = toDate
+        data = urllib.parse.urlencode(params)
+        host = APIHOST
+        url = '/v1/bets?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None 

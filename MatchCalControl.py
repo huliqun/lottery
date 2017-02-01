@@ -38,7 +38,7 @@ def getMatchDraw(date):
     matches = session.query(MatchInfo).\
         filter(MatchInfo.date == date).\
         filter(MatchInfo.minrate > 1.9).\
-        filter(MatchInfo.minrate < 5.1).all()
+        filter(MatchInfo.minrate < 3.0).all()
         
     count = 0
     if matches:
