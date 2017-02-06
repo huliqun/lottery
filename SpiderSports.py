@@ -22,8 +22,8 @@ import SpiderSports500W
 class SpiderSportsBatch(BatchBase):
     def run(self):
         self.initialize()
-#        end = datetime.date.today()
-        end = datetime.datetime.strptime('2015-09-27','%Y-%m-%d').date()
+        end = datetime.date.today()
+#        end = datetime.datetime.strptime('2015-09-27','%Y-%m-%d').date()
         delta = datetime.timedelta(days=1000) 
         start = end - delta  
         

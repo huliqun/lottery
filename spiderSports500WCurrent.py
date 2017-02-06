@@ -259,13 +259,13 @@ class SpiderSports500WCurrentBatch(BatchBase):
                                   singleFlag = singleFlag)
                 self.session.add(mi)
                 
-                m = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == mi.matchid).first()
-                if m is not None:
-                    m.matchTime = mi.mtime.time()
-                    m.zhuRank = mi.zhuRank
-                    m.keRank = mi.keRank
-                    m.rankDValue = mi.rankDValue
-                self.session.flush()
+#                m = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == mi.matchid).first()
+#                if m is not None:
+#                    m.matchTime = mi.mtime.time()
+#                    m.zhuRank = mi.zhuRank
+#                    m.keRank = mi.keRank
+#                    m.rankDValue = mi.rankDValue
+#                self.session.flush()
                 
             self.session.commit()
             
