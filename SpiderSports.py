@@ -98,9 +98,9 @@ class SpiderSportsBatch(BatchBase):
     def getMatch(self, urlM):
         try:
             content = urllib.request.urlopen(urlM,timeout = 10).read()
-            message = content.decode('gbk').encode('utf8')
+            message = content.decode('gbk')
             soup = BeautifulSoup(message, 'html.parser')
-            for tabb in  soup.findAll('table')[0:1]:
+            for tabb in soup.findAll('table')[1:2]:
                 for trr in tabb.findAll('tr'):
                     tds = trr.findAll('td')
                     if len(tds) < 3:

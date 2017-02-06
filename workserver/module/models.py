@@ -5,7 +5,7 @@ Created on Wed May 18 10:18:23 2016
 @author: huliqun
 """
 from sqlalchemy import Column, Integer, SmallInteger, String, Date, Time,\
-    Text, DateTime, func,BigInteger,Float
+    Text, DateTime, func,BigInteger,Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from workserver.util import GLBConfig
 
@@ -308,3 +308,15 @@ class MatchInfo500Time(Base):
     zhuHScore = Column(Integer)
     keHScore = Column(Integer)
     mststus = Column(String(50))
+    
+class PinnacleSports(Base):
+    __tablename__ = 'tbl_pinnacle_sports'
+    id = Column(String(50), primary_key=True)
+    name = Column(String(100))
+    cnname = Column(String(100))
+    hasOfferings = Column(Boolean)
+    leagueSpecialsCount = Column(Integer)
+    eventSpecialsCount = Column(Integer)
+    eventCount = Column(Integer)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)

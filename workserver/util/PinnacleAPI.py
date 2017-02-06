@@ -537,4 +537,74 @@ def GetBets(betlist=None, betids=None, fromDate=None, toDate=None, logger=None):
         return rspjson
     except Exception as ex:
         SysUtil.exceptionPrint(logger, ex)
+        return None
+    
+def GetInrunning(logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}       
+        host = APIHOST
+        url = '/v1/inrunning'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
         return None 
+    
+def GetTranslations(cultureCodes, baseTexts, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        params = {}
+        if cultureCodes:
+            params['cultureCodes'] = cultureCodes
+        if baseTexts:
+            params['baseTexts'] = baseTexts
+        data = urllib.parse.urlencode(params)
+        host = APIHOST
+        url = '/v1/translations?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+
+def GetPeriods(sportId, logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        params = {}
+        if sportId:
+            params['sportId'] = sportId
+        data = urllib.parse.urlencode(params)
+        host = APIHOST
+        url = '/v1/periods?'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url + data, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
+
+def GetCancellationReasons(logger=None):
+    try:
+        headers = {'Authorization': authorization(username, password)}
+        host = APIHOST
+        url = '/v1/cancellationreasons'
+        conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
+        conn.request('GET', url, '', headers)
+        response = conn.getresponse()
+        rspjson = json.loads(response.read().decode())
+        conn.close()
+        return rspjson
+    except Exception as ex:
+        SysUtil.exceptionPrint(logger, ex)
+        return None
