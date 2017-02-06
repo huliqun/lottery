@@ -54,8 +54,10 @@ class SpiderSportsCurrentBatch(BatchBase):
                     lrateS = float(matchInfos[match]['hhad']['a'])
                 minrateS = min(wrateS,drateS,lrateS)
                 orderP=re.compile('(\d+)');
-                zhuRank = int(orderP.findall(matchInfos[match]['h_order'])[0])
-                keRank = int(orderP.findall(matchInfos[match]['a_order'])[0])
+                rankMsg = orderP.findall(matchInfos[match]['h_order'])
+                zhuRank = int(rankMsg[0]) if len(rankMsg) > 0 else 7
+                rankMsg = orderP.findall(matchInfos[match]['a_order'])
+                keRank = int(rankMsg[0]) if len(rankMsg) > 0 else 7
                 
                 mi = MatchInfoD(matchid = matchid,
                                 match = matchInfos[match]['num'],
