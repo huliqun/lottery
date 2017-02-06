@@ -54,6 +54,7 @@ class SpiderSportsCurrentBatch(BatchBase):
                 mi = MatchInfoD(matchid = matchid,
                                 match = matchInfos[match]['num'],
                                 date = datetime.datetime.strptime(matchInfos[match]['date'], '%Y-%m-%d').date(),
+                                matchTime = datetime.datetime.strptime(matchInfos[match]['time'], '%H:%M:%S').time(),
                                 matchtype = matchInfos[match]['l_cn'],
                                 matchtypename = matchInfos[match]['l_cn_abbr'],
                                 matchzhu = matchInfos[match]['h_cn'],
