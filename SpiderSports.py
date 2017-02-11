@@ -215,10 +215,10 @@ class SpiderSportsBatch(BatchBase):
             filter(MatchInfo.date == end_d).delete()
         self.session.commit()
         
-        d = self.session.query(func.min(MatchInfo.date)).scalar()
+        d = self.session.query(func.max(MatchInfo.date)).scalar()
         if d is not None:
             print(d)
-            end_d = d - datetime.timedelta(days=1)
+            start_d = d - datetime.timedelta(days=1)
             
         print(start_d)
         print(end_d)
