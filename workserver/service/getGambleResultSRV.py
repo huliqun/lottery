@@ -6,6 +6,7 @@ Created on Fri May 13 17:05:35 2016
 """
 import falcon
 import datetime
+import json
 from sqlalchemy.sql import func, or_, and_
 
 from workserver.util import GLBConfig
@@ -43,7 +44,9 @@ class getGambleResultResource(ServiceBase):
                             or 'matchB' not in req_para.keys() \
                             or 'BResult' not in req_para.keys():
                         self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')
-                
+            if udata.mode == GLBConfig.MODE_C or udata.mode == GLBConfig.MODE_D:
+                if 'matchids' not in req_para.keys():
+                    self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')                
         self.matchCalcMoney(u, udata, req_para)
         
         matches = self.session.query(MatchData).\
@@ -65,25 +68,59 @@ class getGambleResultResource(ServiceBase):
                    'result': m.matchAResult,
                    'money': m.money})
             else:
-                mA = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchAID ).first()
-                mB = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchBID ).first()
-                maData.append({'matchAID': m.matchAID,
-                               'matchAResult': m.matchAResult,
-                               'matchAtype':mA.matchtypename,
-                               'matchAzhu':mA.matchzhu,
-                               'matchAke':mA.matchke,
-                               'matchAw':mA.wrate,
-                               'matchAd':mA.drate,
-                               'matchAl':mA.lrate,
-                               'matchBID':m.matchBID,
-                               'matchBResult':m.matchBResult,
-                               'matchBtype':mB.matchtypename,
-                               'matchBzhu':mB.matchzhu,
-                               'matchBke':mB.matchke,
-                               'matchBw':mB.wrate,
-                               'matchBd':mB.drate,
-                               'matchBl':mB.lrate,
-                               'money': m.money})
+                if udata.mode == GLBConfig.MODE_A or udata.mode == GLBConfig.MODE_B:
+                    mA = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchAID ).first()
+                    mB = self.session.query(MatchInfoD).filter( MatchInfoD.matchid == m.matchBID ).first()
+                    maData.append({'matchAID': m.matchAID,
+                                   'matchAResult': m.matchAResult,
+                                   'matchAtype':mA.matchtypename,
+                                   'matchAzhu':mA.matchzhu,
+                                   'matchAke':mA.matchke,
+                                   'matchAw':mA.wrate,
+                                   'matchAd':mA.drate,
+                                   'matchAl':mA.lrate,
+                                   'matchBID':m.matchBID,
+                                   'matchBResult':m.matchBResult,
+                                   'matchBtype':mB.matchtypename,
+                                   'matchBzhu':mB.matchzhu,
+                                   'matchBke':mB.matchke,
+                                   'matchBw':mB.wrate,
+                                   'matchBd':mB.drate,
+                                   'matchBl':mB.lrate,
+                                   'money': m.money})
+                elif udata.mode == GLBConfig.MODE_C or udata.mode == GLBConfig.MODE_D:
+                    matInfo = self.session.query(MatchInfoD).filter(MatchInfoD.matchid == m.matchAID).first()
+                    maData.append({'matchid': matInfo.matchid,
+                               'match': matInfo.match,
+                               'date': matInfo.date.strftime('%Y-%m-%d'),
+                               'matchTime': matInfo.matchTime.strftime('%H:%M'),
+                               'matchtype': matInfo.matchtype,
+                               'matchzhu': matInfo.matchzhu,
+                               'matchke': matInfo.matchke,
+                               'wrate': matInfo.wrate,
+                               'drate': matInfo.drate,
+                               'lrate': matInfo.lrate,
+                               'fixScore': matInfo.fixScore,
+                               'wrateS': matInfo.wrateS,
+                               'drateS': matInfo.drateS,
+                               'lrateS': matInfo.lrateS,
+                               's0': matInfo.s0,
+                               's1': matInfo.s1,
+                               's2': matInfo.s2,
+                               's3': matInfo.s3,
+                               's4': matInfo.s4,
+                               's5': matInfo.s5,
+                               's6': matInfo.s6,
+                               's7': matInfo.s7,
+                               'ww': matInfo.ww,
+                               'wd': matInfo.wd,
+                               'wl': matInfo.wl,
+                               'dw': matInfo.dw,
+                               'dd': matInfo.dd,
+                               'dl': matInfo.dl,
+                               'lw': matInfo.lw,
+                               'ld': matInfo.ld,
+                               'll': matInfo.ll})
             sumMoney += m.money
         self.result['data'] = maData
         self.result['sumMoney'] = sumMoney
@@ -129,8 +166,9 @@ class getGambleResultResource(ServiceBase):
                     self.getMatchModeASelfChoice(u, udata, req_para['matchA'], req_para['AResult'], req_para['matchB'], req_para['BResult'])
             if udata.mode == GLBConfig.MODE_B:
                 self.getMatchModeB(u, udata)
+            if udata.mode == GLBConfig.MODE_C:
+                self.getMatchModeC(u, udata, json.loads(req_para['matchids']))
         
-            
     def getMatchMoney(self, m):
         mA= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
         if mA is None:
@@ -145,8 +183,23 @@ class getGambleResultResource(ServiceBase):
             if m.singleFlag == GLBConfig.M_SINGLE:
                 if mA.mResult == m.matchAResult:
                     return m.rate * m.money
-            else:
+            elif m.singleFlag == GLBConfig.M_DUAL:
                 if mA.mResult == m.matchAResult and mB.mResult == m.matchBResult:
+                    return m.rate * m.money
+            elif m.singleFlag == GLBConfig.M_HAFU:
+                if mA.zhuHScore > mA.keHScore:
+                    hafuResult = 'w'
+                elif mA.zhuHScore == mA.keHScore:
+                    hafuResult = 'd'
+                elif mA.zhuHScore == mA.keHScore:
+                    hafuResult = 'l'
+                if mA.zhuScore > mA.keScore:
+                    hafuResult += 'w'
+                elif mA.zhuScore == mA.keScore:
+                    hafuResult += 'd'
+                elif mA.zhuScore == mA.keScore:
+                    hafuResult += 'l'
+                if mA.mResult == hafuResult:
                     return m.rate * m.money
             return -m.money
         return 0.0
@@ -160,6 +213,7 @@ class getGambleResultResource(ServiceBase):
         account = self.session.query(AccountRunning).\
             filter(AccountRunning.userid == u.userid).\
             filter(AccountRunning.date < date).\
+            filter(AccountRunning.status == GLBConfig.ENABLE).\
             order_by(AccountRunning.date.desc()).first()
             
         matches = self.session.query(MatchData).\
@@ -270,12 +324,19 @@ class getGambleResultResource(ServiceBase):
         
         if account:
             if account.riskMoney < 0:
-                money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney *count/3
+                if u.accounttype == GLBConfig.ATYPE_GROUP:
+                    money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney *count/3
+                elif u.accounttype == GLBConfig.ATYPE_PERSION:
+                    if ud.mode == GLBConfig.MODE_A or ud.mode == GLBConfig.MODE_B:
+                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney *count/3
+                    elif ud.mode == GLBConfig.MODE_C or ud.mode == GLBConfig.MODE_D:
+                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney * 1.5
                 if money < ud.basemoney*0.8:
                     money = ud.basemoney*0.8  
         
         matches = self.session.query(MatchData).\
             filter(MatchData.userid == u.userid).\
+            filter(MatchData.status == GLBConfig.ENABLE).\
             filter(MatchData.date == tomorrow).all()
         
         if len(matches) > 0:
@@ -283,9 +344,10 @@ class getGambleResultResource(ServiceBase):
             sumRPara = 1
             for m in matches[1:]:
                 sumRPara += base/m.rate
-                
+            
+            baseMoney = money / sumRPara
             for m in matches:
-                m.money = round(base/m.rate*ud.basemoney/2,0)*2
+                m.money = round(base/m.rate*baseMoney/2,0)*2
                 self.session.flush()
                 
     def getMatchModeA(self, u, udata, dealerid):
@@ -405,6 +467,26 @@ class getGambleResultResource(ServiceBase):
                     rate = rateList[rateBIdex],
                     singleFlag = GLBConfig.M_SINGLE)
             self.session.add(mB)
+            self.session.flush()
+            count += 1
+            if count > 2:
+                break
+        if count > 0:
+            self.calMoney(u, ud, count)
+            
+    def getMatchModeC(self, u, ud ,matchids):
+        tomorrow = SysUtil.getTomorrow()
+        matches = self.session.query(MatchInfoD).\
+            filter(MatchInfoD.matchid.in_(matchids)).all()
+            
+        count = 0
+        for m in matches:
+            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
+            self.session.add(md1)
+            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
+            self.session.add(md2)
+            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
+            self.session.add(md3)
             self.session.flush()
             count += 1
             if count > 2:

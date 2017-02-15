@@ -6,7 +6,13 @@ Created on Sat Apr 09 21:54:27 2016
 """
 
 import urllib
+import urllib.parse
+import urllib.error
+import urllib.request
 #延长有效期 payTime=1 半年 payTime=2 一年
+#accounttype 0 业主版 单关中高赔
+#accounttype 1 彩民版 mode A
+
 #url = 'http://127.0.0.1:8000/sports/webService/payMoney?userid=33333&payTime=2' 
 
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=111111&username=aa&phone=18698729471&local=123456&IDNo=111111&accounttype=0'
@@ -20,14 +26,14 @@ import urllib
 #url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getdealer?userid=222222'
-ecodeq = urllib.parse.urlencode({'dealerid': '4',
-                  'matchA': '20161114周日014',
-                  'AResult': 'L',
-                  'matchB': '20161114周日015',
-                  'BResult': 'L',
-                  'desc': '111111111'
-                  })
-url = 'http://218.61.0.136:9000/sports/webService/setDealerMatch?' + ecodeq
+#ecodeq = urllib.parse.urlencode({'dealerid': '4',
+#                  'matchA': '20161114周日014',
+#                  'AResult': 'L',
+#                  'matchB': '20161114周日015',
+#                  'BResult': 'L',
+#                  'desc': '111111111'
+#                  })
+#url = 'http://218.61.0.136:9000/sports/webService/setDealerMatch?' + ecodeq
 #url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=222222&gambleFlag=1&dealerid=1'
 #ecodeq = urllib.parse.urlencode({'userid': '222222',
 #                  'gambleFlag': '1',
@@ -47,14 +53,22 @@ url = 'http://218.61.0.136:9000/sports/webService/setDealerMatch?' + ecodeq
 
 #url = 'http://127.0.0.1:9000/sports/webService/getAccountLog?userid=222222'
 #url = 'http://218.61.0.136:9000/sports/webService/getAccountLog?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
-#url = 'http://218.61.0.136:9000/sports/webService/getMatches'
+#url = 'http://127.0.0.1:9000/sports/webService/getMatches'
 #url = 'http://218.61.0.136:9000/sports/webService/getdealer?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
+
+#url = 'http://127.0.0.1:9000/sports/webService/getRecommend?type=C'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=C'
+#url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
+ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
+                                 'gambleFlag': '1',
+                                 'matchids': '["20170216周三001"]'})
+url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
 
 try:
      
     response= urllib.request.urlopen(url,timeout = 10)
     msg = response.read()
-    print(msg)
+    print(msg.decode('utf-8'))
 except urllib.error.HTTPError as e:
     print(e.code)
     print(e.reason)

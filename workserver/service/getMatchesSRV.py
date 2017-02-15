@@ -16,7 +16,7 @@ class getMatchesResource(ServiceBase):
         self.initialize()
         
         matches = self.session.query(MatchInfoD).\
-            filter(MatchInfoD.date==SysUtil.getTomorrow()).all()
+            filter(MatchInfoD.status=='Selling').all()
             
         maData = []
         if matches:
@@ -35,7 +35,24 @@ class getMatchesResource(ServiceBase):
                                'fixScore': m.fixScore,
                                'wrateS': m.wrateS,
                                'drateS': m.drateS,
-                               'lrateS': m.lrateS})
+                               'lrateS': m.lrateS,
+                               's0': m.s0,
+                               's1': m.s1,
+                               's2': m.s2,
+                               's3': m.s3,
+                               's4': m.s4,
+                               's5': m.s5,
+                               's6': m.s6,
+                               's7': m.s7,
+                               'ww': m.ww,
+                               'wd': m.wd,
+                               'wl': m.wl,
+                               'dw': m.dw,
+                               'dd': m.dd,
+                               'dl': m.dl,
+                               'lw': m.lw,
+                               'ld': m.ld,
+                               'll': m.ll})
 
         self.result['data'] = maData
         
