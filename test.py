@@ -23,7 +23,7 @@ import urllib.request
 #url = 'http://127.0.0.1:8000/sports/webService/getAccountLog?userid=111111' 获取账户流水信息
 
 #url = 'http://127.0.0.1:9000/sports/webService/userReg?userid=222222&username=aa&phone=18698729472&local=123456&IDNo=111111&accounttype=1'
-#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=222222&basemoney=200.00&mode=A&reset=1'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=222222'
 #url = 'http://127.0.0.1:9000/sports/webService/getdealer?userid=222222'
 #ecodeq = urllib.parse.urlencode({'dealerid': '4',
@@ -47,7 +47,7 @@ import urllib.request
 #url = 'http://127.0.0.1:9000/sports/webService/getGameResult'
 
 #url = 'http://127.0.0.1:8000/sports/webService/userReg?userid=33333&username=aa&phone=18698729473&local=123456&IDNo=111111&accounttype=1'
-#url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=33333&basemoney=100.00&mode=B'
+#url = 'http://127.0.0.1:8000/sports/webService/setBaseMoney?userid=33333&basemoney=100.00&mode=B&reset=0'
 #url = 'http://127.0.0.1:8000/sports/webService/getCurrentResult?userid=33333'
 #url = 'http://127.0.0.1:8000/sports/webService/getGambleResult?userid=33333&gambleFlag=1&dealerid=1'
 
@@ -58,7 +58,7 @@ import urllib.request
 
 # 半全场
 #url = 'http://127.0.0.1:9000/sports/webService/getRecommend?type=C'
-#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=C'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=C&reset=0'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 #ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
 #                                 'gambleFlag': '1',
@@ -67,7 +67,7 @@ import urllib.request
 
 # 总比分
 #url = 'http://127.0.0.1:9000/sports/webService/getRecommend?type=D'
-#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=D'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=D&reset=0'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
                                  'gambleFlag': '1',
