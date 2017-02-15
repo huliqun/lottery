@@ -168,6 +168,8 @@ class getGambleResultResource(ServiceBase):
                 self.getMatchModeB(u, udata)
             if udata.mode == GLBConfig.MODE_C:
                 self.getMatchModeC(u, udata, json.loads(req_para['matchids']))
+            if udata.mode == GLBConfig.MODE_D:
+                self.getMatchModeD(u, udata, json.loads(req_para['matchids']))
         
     def getMatchMoney(self, m):
         mA= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
@@ -199,7 +201,11 @@ class getGambleResultResource(ServiceBase):
                     hafuResult += 'd'
                 elif mA.zhuScore == mA.keScore:
                     hafuResult += 'l'
-                if mA.mResult == hafuResult:
+                if m.matchAResult == hafuResult:
+                    return m.rate * m.money
+            elif m.singleFlag == GLBConfig.M_SCORE:
+                mScores = int(mA.zhuScore) + int(mA.keScore)
+                if int(m.matchAResult) == mScores:
                     return m.rate * m.money
             return -m.money
         return 0.0
@@ -328,9 +334,9 @@ class getGambleResultResource(ServiceBase):
                     money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney *count/3
                 elif u.accounttype == GLBConfig.ATYPE_PERSION:
                     if ud.mode == GLBConfig.MODE_A or ud.mode == GLBConfig.MODE_B:
-                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney *count/3
+                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney * count/3
                     elif ud.mode == GLBConfig.MODE_C or ud.mode == GLBConfig.MODE_D:
-                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney * 1.5
+                        money = ((-1)*account.riskMoney/(ud.basemoney) + 1) * ud.basemoney * count * 1.5
                 if money < ud.basemoney*0.8:
                     money = ud.basemoney*0.8  
         
@@ -481,11 +487,31 @@ class getGambleResultResource(ServiceBase):
             
         count = 0
         for m in matches:
-            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
+            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
             self.session.add(md1)
-            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
+            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
             self.session.add(md2)
-            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
+            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
+            self.session.add(md3)
+            self.session.flush()
+            count += 1
+            if count > 2:
+                break
+        if count > 0:
+            self.calMoney(u, ud, count)
+            
+    def getMatchModeD(self, u, ud ,matchids):
+        tomorrow = SysUtil.getTomorrow()
+        matches = self.session.query(MatchInfoD).\
+            filter(MatchInfoD.matchid.in_(matchids)).all()
+            
+        count = 0
+        for m in matches:
+            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '2', rate = m.s2)
+            self.session.add(md1)
+            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '3', rate = m.s3)
+            self.session.add(md2)
+            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '4', rate = m.s4)
             self.session.add(md3)
             self.session.flush()
             count += 1

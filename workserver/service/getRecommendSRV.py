@@ -49,7 +49,7 @@ class GetRecommendSRVResource(ServiceBase):
                                'matchBd':mB.drate,
                                'matchBl':mB.lrate
                                })
-        elif rType == GLBConfig.MODE_C or rType == GLBConfig.MODE_D: #推荐半全场 推荐总进球
+        elif rType == GLBConfig.MODE_C: #推荐半全场
             for m in self.session.query(MatchInfoD).\
                     filter(MatchInfoD.date == SysUtil.getTomorrow()).\
                     filter(MatchInfoD.ww > 1.0).\
@@ -77,7 +77,36 @@ class GetRecommendSRVResource(ServiceBase):
                                'ld': m.ld,
                                'll': m.ll
                                })
-#        print(maData)
+        elif rType == GLBConfig.MODE_D: #推荐总进球
+            for m in self.session.query(MatchInfoD).\
+                    filter(MatchInfoD.date == SysUtil.getTomorrow()).\
+                    filter(MatchInfoD.s0 > 1.0).\
+                    filter(MatchInfoD.minrate > 1.2).\
+                    filter(MatchInfoD.minrate < 2.1).all():
+                maData.append({'matchid': m.matchid,
+                               'matchtype': m.matchtypename,
+                               'matchzhu':m.matchzhu,
+                               'matchke':m.matchke,
+                               's0': m.s0,
+                               's1': m.s1,
+                               's2': m.s2,
+                               's3': m.s3,
+                               's4': m.s4,
+                               's5': m.s5,
+                               's6': m.s6,
+                               's7': m.s7,
+                               'ww': m.ww,
+                               'wd': m.wd,
+                               'wl': m.wl,
+                               'dw': m.dw,
+                               'dd': m.dd,
+                               'dl': m.dl,
+                               'lw': m.lw,
+                               'ld': m.ld,
+                               'll': m.ll
+                               })
+    
+        print(maData)
         self.result['data'] = maData
         req.context['result'] = self.result
         resp.set_header('Powered-By', 'huliquns@126.com')

@@ -37,18 +37,18 @@ def clearData():
 def getMatchDraw(date):
     matches = session.query(MatchInfo).\
         filter(MatchInfo.date == date).\
-        filter(MatchInfo.ww > 1.0).\
-        filter(MatchInfo.minrate > 1.9).\
-        filter(MatchInfo.minrate < 3.0).all()
+        filter(MatchInfo.s0 > 1.0).\
+        filter(MatchInfo.minrate > 1.2).\
+        filter(MatchInfo.minrate < 2.1).all()
         
     count = 0
     if matches:
         for m in matches:
-            md1 = MatchDataBatch( date = date, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
+            md1 = MatchDataBatch( date = date, singleFlag = '4', matchAID = m.matchid, matchAResult = '2', rate = m.s2)
             session.add(md1)
-            md2 = MatchDataBatch( date = date, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
+            md2 = MatchDataBatch( date = date, singleFlag = '4', matchAID = m.matchid, matchAResult = '3', rate = m.s3)
             session.add(md2)
-            md3 = MatchDataBatch( date = date, singleFlag = '3', matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
+            md3 = MatchDataBatch( date = date, singleFlag = '4', matchAID = m.matchid, matchAResult = '4', rate = m.s4)
             session.add(md3)
             session.commit()
             count += 1
@@ -70,22 +70,13 @@ def calMoney(date, money):
         session.commit()
 
 def getMatchMoney(m):
-    if m.singleFlag == '3':
+    if m.singleFlag == '4':
         mi = session.query(MatchInfo).\
             filter(MatchInfo.matchid == m.matchAID).first()
         if mi:
-            if mi.zhuHScore == mi.keHScore:
-                if mi.zhuScore > mi.keScore:
-                    if m.matchAResult == 'dw':
-                        return m.rate * m.money
-                        
-                if mi.zhuScore == mi.keScore:
-                    if m.matchAResult == 'dd':
-                        return m.rate * m.money
-                        
-                if mi.zhuScore < mi.keScore:
-                    if m.matchAResult == 'dl':
-                        return m.rate * m.money
+            mScore = int(mi.zhuScore) + int(mi.keScore)
+            if int(m.matchAResult) == mScore:
+                return m.rate * m.money
         else:
             return None
     return 0.00

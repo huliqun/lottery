@@ -56,13 +56,24 @@ import urllib.request
 #url = 'http://127.0.0.1:9000/sports/webService/getMatches'
 #url = 'http://218.61.0.136:9000/sports/webService/getdealer?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
 
+# 半全场
 #url = 'http://127.0.0.1:9000/sports/webService/getRecommend?type=C'
 #url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=C'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
+#ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
+#                                 'gambleFlag': '1',
+#                                 'matchids': '["20170216周三001"]'})
+#url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
+
+# 总比分
+#url = 'http://127.0.0.1:9000/sports/webService/getRecommend?type=D'
+#url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=D'
+#url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
                                  'gambleFlag': '1',
-                                 'matchids': '["20170216周三001"]'})
+                                 'matchids': '["20170216周三004"]'})
 url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
+
 
 try:
      
