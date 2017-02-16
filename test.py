@@ -71,7 +71,7 @@ import urllib.request
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
                                  'gambleFlag': '1',
-                                 'matchids': '["20170216周三004"]'})
+                                 'matchids': '["20170217周四002"]'})
 url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
 
 
