@@ -106,7 +106,7 @@ class GetRecommendSRVResource(ServiceBase):
                                'll': m.ll
                                })
     
-        print(maData)
+#        print(maData)
         self.result['data'] = maData
         req.context['result'] = self.result
         resp.set_header('Powered-By', 'huliquns@126.com')
