@@ -13,7 +13,7 @@ from workserver.util import SysUtil
 from workserver.util import GLBConfig
 from workserver.module.models import User, UserData, PayLog, AccountRunning, MatchData, AccountRunningBatch, MatchDataBatch,\
 Dealer, MatchInfo, MatchInfo500, MatchInfoD, MatchInfo500D, DealerMatch, MatchInfo500Time,\
-PinnacleSports
+PinnacleSports, PinnacleLeagues, PinnacleTimestamp, PinnacleFixtures, PinnacleSettledFixtures, PinnacleSettledSpecialFixtures
 
 # 为了解决mysql gone away尝试使用NullPool和设置POOL_RECYCLE为5s
 #engine = create_engine(DB_CONNECT_STRING, encoding=DB_ENCODING, echo=DB_ECHO, pool_recycle=POOL_RECYCLE, poolclass=NullPool)
@@ -85,6 +85,26 @@ def InitTables(engine):
         
     if 'tbl_pinnacle_sports' not in tables:
         PinnacleSports.__table__.create(engine)
+        db.commit()
+        
+    if 'tbl_pinnacle_leagues' not in tables:
+        PinnacleLeagues.__table__.create(engine)
+        db.commit()
+    
+    if 'tbl_pinnacle_timestamp' not in tables:
+        PinnacleTimestamp.__table__.create(engine)
+        db.commit()
+    
+    if 'tbl_pinnacle_fixtures' not in tables:
+        PinnacleFixtures.__table__.create(engine)
+        db.commit()
+    
+    if 'tbl_pinnacle_settled_fixtures' not in tables:
+        PinnacleSettledFixtures.__table__.create(engine)
+        db.commit()
+        
+    if 'tbl_pinnacle_settled_Special_fixtures' not in tables:
+        PinnacleSettledSpecialFixtures.__table__.create(engine)
         db.commit()
 
 if __name__ == '__main__':

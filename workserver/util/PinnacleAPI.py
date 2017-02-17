@@ -44,7 +44,10 @@ def GetSportsV2(logger = None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -78,7 +81,10 @@ def GetLeaguesV2(sportId ,logger = None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -103,7 +109,10 @@ def GetFixtures(sportId, leagueIds=[], since=None, islive=None, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -126,7 +135,10 @@ def GetSettledFixtures(sportId, leagueIds=[], since=None, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -155,7 +167,10 @@ def GetSpecialFixtures(sportId, leagueIds=[], category=None, eventId=None, speci
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -178,7 +193,10 @@ def GetSettledSpecialFixtures(sportId, leagueIds=[], since=None, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -195,7 +213,10 @@ def GetTeaserGroups(oddsFormat, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -222,7 +243,10 @@ def GetOdds(sportId, leagueIds=[], since=None, islive=None, oddsFormat=None, log
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -249,7 +273,10 @@ def GetOddsParlay(sportId, leagueIds=[], since=None, islive=None, oddsFormat=Non
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -266,7 +293,10 @@ def GetTeaserOdds(teaserId, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -293,7 +323,10 @@ def GetSpecialOdds(sportId, leagueIds=[], since=None, specialId=None, oddsFormat
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -308,7 +341,10 @@ def GetCurrencies(logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -323,7 +359,10 @@ def GetClientBalance(logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -358,7 +397,10 @@ def GetLine(sportId, leagueId, eventId , periodNumber, betType, oddsFormat, team
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -380,7 +422,10 @@ def GetParlayLine(oddsFormat, legs, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('POST', url, json.dumps(params).encode(), headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -404,7 +449,10 @@ def GetTeaserLines(teaserId, oddsFormat, legs, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('POST', url, json.dumps(params).encode(), headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -427,7 +475,10 @@ def GetSpecialLines(specialId, contestantId, oddsFormat, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -457,7 +508,10 @@ def PlaceParlayBet(uniqueRequestId, acceptBetterLine, oddsFormat, riskAmount, ro
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('POST', url, json.dumps(params).encode(), headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -487,7 +541,10 @@ def PlaceTeaserBet(uniqueRequestId, teaserId, oddsFormat, winRiskStake, stake, l
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('POST', url, json.dumps(params).encode(), headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -507,7 +564,10 @@ def PlaceSpecialBet(bets, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('POST', url, json.dumps(params).encode(), headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -532,7 +592,10 @@ def GetBets(betlist=None, betids=None, fromDate=None, toDate=None, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -547,7 +610,10 @@ def GetInrunning(logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -568,11 +634,14 @@ def GetTranslations(cultureCodes, baseTexts, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
-        SysUtil.exceptionPrint(logger, ex)
+#        SysUtil.exceptionPrint(logger, ex)
         return None
 
 def GetPeriods(sportId, logger=None):
@@ -587,7 +656,10 @@ def GetPeriods(sportId, logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url + data, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
@@ -602,9 +674,21 @@ def GetCancellationReasons(logger=None):
         conn = http.client.HTTPSConnection(host, timeout=GLB_TIMEOUT)
         conn.request('GET', url, '', headers)
         response = conn.getresponse()
-        rspjson = json.loads(response.read().decode())
+        msg = response.read()
+        rspjson = None
+        if msg:
+            rspjson = json.loads(msg.decode())
         conn.close()
         return rspjson
     except Exception as ex:
         SysUtil.exceptionPrint(logger, ex)
         return None
+        
+def GetTransResult(text, code, translations):
+    if translations:
+        for item in translations['translations']:
+            if item['text'] == text:
+                for trans in item['cultures']:
+                    if trans['id'] == code:
+                        return trans['text']
+    return ''

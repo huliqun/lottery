@@ -14,13 +14,13 @@ from workserver.util import PinnacleAPI
 if __name__ == '__main__':
     LogUtil.initLog()
     logger = logging.getLogger('serverLog')
-    print(PinnacleAPI.GetSportsV2(logger))
+#    print(PinnacleAPI.GetSportsV2(logger))
     
-#    print(PinnacleAPI.GetLeaguesV2(15, logger))
+#    print(PinnacleAPI.GetLeaguesV2(1, logger))
 #    print(PinnacleAPI.GetFixtures(15, logger=logger))
 #    print(PinnacleAPI.GetSettledFixtures(15, logger=logger))
 #    print(PinnacleAPI.GetSpecialFixtures(15, logger=logger))
-#    print(PinnacleAPI.GetSettledSpecialFixtures(15, logger=logger))
+    print(PinnacleAPI.GetSettledSpecialFixtures(15, logger=logger))
 #    print(PinnacleAPI.GetTeaserGroups('HONGKONG', logger=logger))
 #    print(PinnacleAPI.GetOdds(15, logger=logger))
 #    print(PinnacleAPI.GetOddsParlay(15, logger=logger))
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 #    print(PinnacleAPI.PlaceSpecialBet(bets, logger=logger))
 #    print(PinnacleAPI.GetBets(betlist='settled', fromDate='2016-06-01', toDate='2016-07-01', logger=logger))
 #    print(PinnacleAPI.GetInrunning(logger=logger))
-#    print(PinnacleAPI.GetTranslations('zh-CN|zh-TW','Football|Soccer',logger=logger))
+    print(PinnacleAPI.GetTranslations('zh-CN','Championship',logger=logger))
 #    print(PinnacleAPI.GetPeriods(29, logger=logger))
 #    print(PinnacleAPI.GetCancellationReasons(logger=logger))
 

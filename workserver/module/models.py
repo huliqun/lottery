@@ -309,14 +309,94 @@ class MatchInfo500Time(Base):
     keHScore = Column(Integer)
     mststus = Column(String(50))
     
-class PinnacleSports(Base):
-    __tablename__ = 'tbl_pinnacle_sports'
-    id = Column(String(50), primary_key=True)
+class PinnaclePara(Base):
+    __tablename__ = 'tbl_pinnacle_para'
+    id = Column(Integer, primary_key=True)
     name = Column(String(100))
     cnname = Column(String(100))
     hasOfferings = Column(Boolean)
     leagueSpecialsCount = Column(Integer)
     eventSpecialsCount = Column(Integer)
     eventCount = Column(Integer)
-    maketime = Column(DateTime(), default=func.now(), nullable=False)
     modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)    
+    
+class PinnacleSports(Base):
+    __tablename__ = 'tbl_pinnacle_sports'
+    id = Column(BigInteger, primary_key=True)
+    name = Column(String(100))
+    cnname = Column(String(100))
+    hasOfferings = Column(Boolean)
+    leagueSpecialsCount = Column(Integer)
+    eventSpecialsCount = Column(Integer)
+    eventCount = Column(Integer)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+
+class PinnacleLeagues(Base):
+    __tablename__ = 'tbl_pinnacle_leagues'
+    id = Column(BigInteger, primary_key=True)
+    sportId = Column(BigInteger)
+    name = Column(String(100))
+    cnname = Column(String(100))
+    homeTeamType = Column(String(20))
+    hasOfferings = Column(Boolean)
+    allowRoundRobins = Column(Boolean)
+    leagueSpecialsCount = Column(Integer)
+    eventSpecialsCount = Column(Integer)
+    eventCount = Column(Integer)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+
+class PinnacleTimestamp(Base):
+    __tablename__ = 'tbl_pinnacle_timestamp'
+    uid = Column(Integer, primary_key=True, autoincrement=True)
+    tstype = Column(String(100))
+    sportId = Column(BigInteger)   
+    value1 = Column(BigInteger)
+    value2 = Column(String(100))
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+    
+class PinnacleFixtures(Base):
+    __tablename__ = 'tbl_pinnacle_fixtures'
+    id = Column(BigInteger, primary_key=True)
+    sportId = Column(BigInteger)
+    leagueId = Column(BigInteger)
+    starts = Column(DateTime)
+    home = Column(String(100))
+    cnhome = Column(String(100))
+    away = Column(String(100))
+    cnaway = Column(String(100))
+    rotNum = Column(String(50))
+    liveStatus = Column(String(5))
+    status = Column(String(5))
+    parlayRestriction = Column(String(5))
+    homePitcher = Column(String(100))
+    awayPitcher = Column(String(100))
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+    
+class PinnacleSettledFixtures(Base):
+    __tablename__ = 'tbl_pinnacle_settled_fixtures'
+    settlementId = Column(BigInteger, primary_key=True)
+    sportId = Column(BigInteger)
+    leagueId = Column(BigInteger)
+    eventId = Column(BigInteger)
+    number = Column(Integer)
+    settledAt = Column(DateTime)
+    status = Column(String(10))
+    team1Score = Column(Integer)
+    team2Score = Column(Integer)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
+    
+class PinnacleSettledSpecialFixtures(Base):
+    __tablename__ = 'tbl_pinnacle_settled_Special_fixtures'
+    settlementId = Column(BigInteger, primary_key=True)
+    SpecialId = Column(BigInteger)
+    sportId = Column(BigInteger)
+    leagueId = Column(BigInteger)
+    settledAt = Column(DateTime)
+    modifyTime = Column(DateTime(), default=func.now(), nullable=False)
+    maketime = Column(DateTime(), default=func.now(), nullable=False)
