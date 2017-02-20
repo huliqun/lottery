@@ -13,8 +13,11 @@ from . import SysUtil
 
 APIHOST = 'api.pinnacle.com'
 GLB_TIMEOUT = 10
-username = 'LH874811'
-password = '!55286668hlq'
+#username = 'LH874811'
+#password = '!55286668hlq'
+
+username = 'JL946281'
+password = 'DJ851217@'
 
 def authorization(usr, pwd):
     return 'Basic ' + base64.b64encode((usr + ':' + pwd).encode(encoding="utf-8")).decode()

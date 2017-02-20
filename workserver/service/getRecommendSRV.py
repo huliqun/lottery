@@ -8,7 +8,7 @@ import falcon
 
 from workserver.util import GLBConfig
 from workserver.service.ServiceBase import ServiceBase
-from workserver.module.models import DealerMatch, Dealer, MatchInfoD
+from workserver.module.models import DealerMatch, Dealer, MatchInfoD, UserData
 from workserver.util import SysUtil
 
 class GetRecommendSRVResource(ServiceBase):
@@ -16,10 +16,14 @@ class GetRecommendSRVResource(ServiceBase):
         self.initialize()        
         maData = []
         req_para = falcon.util.uri.parse_query_string(req.query_string)
-        if 'type' not in req_para.keys():
-            self.errorReturn(GLBConfig.API_ERROR,'type 不存在.')
+        if 'userid' not in req_para.keys():
+            self.errorReturn(GLBConfig.API_ERROR,'userid 不存在.')
+            
+        udata = self.session.query(UserData).filter(UserData.userid == req_para['userid']).first()
+        if udata is None:
+            self.errorReturn(GLBConfig.API_ERROR, '目标金额未设置.')
         
-        rType = req_para['type']
+        rType = udata.mode
         
         if rType == GLBConfig.MODE_A: # 推荐2串1
             for m, d in self.session.query(DealerMatch, Dealer).\

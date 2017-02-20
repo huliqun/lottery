@@ -6,8 +6,10 @@ Created on Thu Sep  1 16:45:49 2016
 """
 from sqlalchemy.sql import func
 import re
+import time
 import datetime
 
+import workserver.settings as settings
 from workserver.util import SysUtil
 from workserver.util import PinnacleAPI
 from workserver.batch.BatchBase import BatchBase
@@ -20,20 +22,28 @@ class PinnacleSyncBatch(BatchBase):
     def run(self):
         self.initialize()
         
-#        self.GetSports()
+        self.GetSports()
 #        self.GetLeagues()
 #        self.GetFixtures()
 #        self.GetSettledFixtures()
-        self.GetSettledSpecialFixtures()
+#        self.GetSettledSpecialFixtures()
         
         self.release()
     
     def GetSports(self):
         JSrsp = PinnacleAPI.GetSportsV2(self.logger)
+        errorC = 0
+        while not JSrsp:
+            if errorC > settings.spyderErrorTimes:
+                break
+            time.sleep(settings.spyderDelayTime)
+            JSrsp = PinnacleAPI.GetSportsV2(self.logger)
+            errorC+=1
         if JSrsp:
             sports = JSrsp['sports']
             transStr = '|'.join([ s['name'] for s in sports])
             transRst = PinnacleAPI.GetTranslations(TRANS_CODE,transStr,self.logger)
+            
             for s in sports:
                 sp = self.session.query(PinnacleSports).\
                     filter(PinnacleSports.id == s['id']).\
@@ -59,6 +69,13 @@ class PinnacleSyncBatch(BatchBase):
     def GetLeagues(self):
         for s in self.session.query(PinnacleSports).all():
             JSrsp = PinnacleAPI.GetLeaguesV2(s.id, self.logger)
+            errorC = 0
+            while not JSrsp:
+                if errorC > settings.spyderErrorTimes:
+                    break
+                time.sleep(settings.spyderDelayTime)
+                JSrsp = PinnacleAPI.GetLeaguesV2(s.id, self.logger)
+                errorC+=1
             if JSrsp:
                 leagues = JSrsp['leagues']
                 transStr = '|'.join([ l['name'] for l in leagues])
@@ -99,6 +116,17 @@ class PinnacleSyncBatch(BatchBase):
                 JSrsp = PinnacleAPI.GetFixtures(s.id, since=ts.value1,logger=self.logger)
             else:
                 JSrsp = PinnacleAPI.GetFixtures(s.id, logger=self.logger)
+                
+            errorC = 0
+            while not JSrsp:
+                if errorC > settings.spyderErrorTimes:
+                    break
+                time.sleep(settings.spyderDelayTime)
+                if ts:
+                    JSrsp = PinnacleAPI.GetFixtures(s.id, since=ts.value1,logger=self.logger)
+                else:
+                    JSrsp = PinnacleAPI.GetFixtures(s.id, logger=self.logger)
+                errorC+=1
             
             if JSrsp:
                 if ts:
@@ -165,6 +193,17 @@ class PinnacleSyncBatch(BatchBase):
                 JSrsp = PinnacleAPI.GetSettledFixtures(s.id, since=ts.value1,logger=self.logger)
             else:
                 JSrsp = PinnacleAPI.GetSettledFixtures(s.id, logger=self.logger)
+                
+            errorC = 0
+            while not JSrsp:
+                if errorC > settings.spyderErrorTimes:
+                    break
+                time.sleep(settings.spyderDelayTime)
+                if ts:
+                    JSrsp = PinnacleAPI.GetSettledFixtures(s.id, since=ts.value1,logger=self.logger)
+                else:
+                    JSrsp = PinnacleAPI.GetSettledFixtures(s.id, logger=self.logger)
+                errorC+=1
             
             if JSrsp:
                 if ts:
@@ -223,6 +262,17 @@ class PinnacleSyncBatch(BatchBase):
             else:
                 JSrsp = PinnacleAPI.GetSettledSpecialFixtures(s.id, logger=self.logger)
             
+            errorC = 0
+            while not JSrsp:
+                if errorC > settings.spyderErrorTimes:
+                    break
+                time.sleep(settings.spyderDelayTime)
+                if ts:
+                    JSrsp = PinnacleAPI.GetSettledSpecialFixtures(s.id, since=ts.value1,logger=self.logger)
+                else:
+                    JSrsp = PinnacleAPI.GetSettledSpecialFixtures(s.id, logger=self.logger)
+                errorC+=1
+                
             if JSrsp:
                 if ts:
                     ts.value1 = JSrsp['last']
