@@ -89,6 +89,7 @@ class AccountRunningBatch(Base):
     riskMoney = Column(Float, default=0.0)
     totalResult = Column(Float, default=0.0)
     fixTotal = Column(Float, default=0.0)
+    matchCount = Column(Integer)
     status = Column(String(5), default='1')
 
 class MatchDataBatch(Base):

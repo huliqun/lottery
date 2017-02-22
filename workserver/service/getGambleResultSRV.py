@@ -281,7 +281,7 @@ class getGambleResultResource(ServiceBase):
             rateBIdex = SysUtil.getMidIndex(rateList)
             
             if m.minrate < 1.46:
-                if m.randDValue > 8 or m.randDValue < -8:
+                if m.rankDValue > 8 or m.rankDValue < -8:
                     rateAIdex = 0
                     rateBIdex = 2
                     

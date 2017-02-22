@@ -31,7 +31,7 @@ app.add_route('/sports/webService/getGambleResult', getGambleResultSRV.getGamble
 #app.add_route('/sports/webService/getMatchResult', getMatchResultSRV.getMatchResultResource())
 app.add_route('/sports/webService/getGameResult', getGameResultSRV.getGameResultResource())
 app.add_route('/sports/webService/getAccountLog', getAccountLogSRV.getAccountLogResource())
-app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())
+#app.add_route('/sports/webService/getdealer', getdealerSRV.GetDealerSRVResource())
 app.add_route('/sports/webService/getRecommend', getRecommendSRV.GetRecommendSRVResource())
 app.add_route('/sports/webService/setDealerMatch', setDealerMatchSRV.setDealerMatchSRVResource())
 app.add_route('/sports/webService/getMatches', getMatchesSRV.getMatchesResource())
