@@ -72,37 +72,13 @@ class getCurrentResultResource(ServiceBase):
                     if not matInfo:
                         matInfo = self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
                     if matInfo:
-                        maData.append({'matchid': matInfo.matchid,
-                                   'match': matInfo.match,
-                                   'date': matInfo.date.strftime('%Y-%m-%d'),
-                                   'matchTime': matInfo.matchTime.strftime('%H:%M'),
-                                   'matchtype': matInfo.matchtype,
-                                   'matchzhu': matInfo.matchzhu,
-                                   'matchke': matInfo.matchke,
-                                   'wrate': matInfo.wrate,
-                                   'drate': matInfo.drate,
-                                   'lrate': matInfo.lrate,
-                                   'fixScore': matInfo.fixScore,
-                                   'wrateS': matInfo.wrateS,
-                                   'drateS': matInfo.drateS,
-                                   'lrateS': matInfo.lrateS,
-                                   's0': matInfo.s0,
-                                   's1': matInfo.s1,
-                                   's2': matInfo.s2,
-                                   's3': matInfo.s3,
-                                   's4': matInfo.s4,
-                                   's5': matInfo.s5,
-                                   's6': matInfo.s6,
-                                   's7': matInfo.s7,
-                                   'ww': matInfo.ww,
-                                   'wd': matInfo.wd,
-                                   'wl': matInfo.wl,
-                                   'dw': matInfo.dw,
-                                   'dd': matInfo.dd,
-                                   'dl': matInfo.dl,
-                                   'lw': matInfo.lw,
-                                   'ld': matInfo.ld,
-                                   'll': matInfo.ll})
+                        maData.append({'matchid': m.matchAID,
+                                   'matchResult': m.matchAResult,
+                                   'matchtype':matInfo.matchtypename,
+                                   'matchzhu':matInfo.matchzhu,
+                                   'matchke':matInfo.matchke,
+                                   'rete':m.rate,
+                                   'money':m.money})
                     
             self.result['data'] = maData
         else:
