@@ -499,7 +499,7 @@ class getGambleResultResource(ServiceBase):
     def getMatchModeD(self, u, ud ,matchid):
         tomorrow = SysUtil.getTomorrow()
         m = self.session.query(MatchInfoD).\
-            filter(MatchInfoD.matchid == matchid).all()
+            filter(MatchInfoD.matchid == matchid).first()
             
         count = 1
         md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '2', rate = m.s2)
