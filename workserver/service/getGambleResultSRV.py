@@ -51,6 +51,7 @@ class getGambleResultResource(ServiceBase):
         
         matches = self.session.query(MatchData).\
             filter(MatchData.userid == u.userid).\
+            filter(MatchData.status == GLBConfig.ENABLE).\
             filter(MatchData.date == SysUtil.getTomorrow()).all()
         
         maData = []
