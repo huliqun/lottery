@@ -25,6 +25,7 @@ class getCurrentResultResource(ServiceBase):
             filter(MatchData.status == GLBConfig.ENABLE).\
             filter(MatchData.userid == req_para['userid']).all()
         maData = []
+        print(len(matches))
         if matches:
             for m in matches:
                 if m.singleFlag == GLBConfig.M_SINGLE:

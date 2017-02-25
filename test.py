@@ -58,7 +58,7 @@ import urllib.request
 
 # 半全场
 #url = 'http://127.0.0.1:9000/sports/webService/getRecommend?userid=o0yUowfE2119Am1juh6BPkapWiS4'
-url = 'http://218.61.0.136:9000/sports/webService/getRecommend?userid=o0yUowfE2119Am1juh6BPkapWiS4'
+#url = 'http://218.61.0.136:9000/sports/webService/getRecommend?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 #url = 'http://127.0.0.1:9000/sports/webService/setBaseMoney?userid=o0yUowfE2119Am1juh6BPkapWiS4&basemoney=200.00&mode=C&reset=0'
 #url = 'http://127.0.0.1:9000/sports/webService/getCurrentResult?userid=o0yUowfE2119Am1juh6BPkapWiS4'
 #ecodeq = urllib.parse.urlencode({'userid': 'o0yUowfE2119Am1juh6BPkapWiS4',
@@ -75,6 +75,7 @@ url = 'http://218.61.0.136:9000/sports/webService/getRecommend?userid=o0yUowfE21
 #                                 'matchids': '["20170217周四002"]'})
 #url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
 
+url = 'http://218.61.0.136:9000/sports/webService/getCurrentResult?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
 
 try:
      
