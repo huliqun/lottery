@@ -28,9 +28,10 @@ class setBaseMoneyResource(ServiceBase):
                 self.errorReturn(GLBConfig.API_ERROR ,'用户不存在.')
             
             self.session.query(UserData).filter(UserData.userid == user.userid).delete()
+            self.session.query(MatchData).filter(MatchData.userid == user.userid).update({MatchData.status: '0'})
+
             if req_para['reset'] == '1':
                 self.session.query(AccountRunning).filter(AccountRunning.userid == user.userid).update({AccountRunning.status: '0'})
-                self.session.query(MatchData).filter(MatchData.userid == user.userid).update({MatchData.status: '0'})
             self.session.flush()
             
             if 'mode' in req_para.keys():
