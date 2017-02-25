@@ -45,7 +45,7 @@ class getGambleResultResource(ServiceBase):
                             or 'BResult' not in req_para.keys():
                         self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')
             if udata.mode == GLBConfig.MODE_C or udata.mode == GLBConfig.MODE_D:
-                if 'matchids' not in req_para.keys():
+                if 'matchid' not in req_para.keys():
                     self.errorReturn(GLBConfig.API_ERROR, '接口参数不正确.')                
         self.matchCalcMoney(u, udata, req_para)
         
@@ -167,9 +167,9 @@ class getGambleResultResource(ServiceBase):
             if udata.mode == GLBConfig.MODE_B:
                 self.getMatchModeB(u, udata)
             if udata.mode == GLBConfig.MODE_C:
-                self.getMatchModeC(u, udata, json.loads(req_para['matchids']))
+                self.getMatchModeC(u, udata, req_para['matchid'])
             if udata.mode == GLBConfig.MODE_D:
-                self.getMatchModeD(u, udata, json.loads(req_para['matchids']))
+                self.getMatchModeD(u, udata, req_para['matchid'])
         
     def getMatchMoney(self, m):
         mA= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
@@ -480,42 +480,34 @@ class getGambleResultResource(ServiceBase):
         if count > 0:
             self.calMoney(u, ud, count)
             
-    def getMatchModeC(self, u, ud ,matchids):
+    def getMatchModeC(self, u, ud ,matchid):
         tomorrow = SysUtil.getTomorrow()
-        matches = self.session.query(MatchInfoD).\
-            filter(MatchInfoD.matchid.in_(matchids)).all()
+        m = self.session.query(MatchInfoD).\
+            filter(MatchInfoD.matchid == matchid).first()
             
-        count = 0
-        for m in matches:
-            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
-            self.session.add(md1)
-            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
-            self.session.add(md2)
-            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
-            self.session.add(md3)
-            self.session.flush()
-            count += 1
-            if count > 2:
-                break
+        count = 1
+        md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dw', rate = m.dw)
+        self.session.add(md1)
+        md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dd', rate = m.dd)
+        self.session.add(md2)
+        md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_HAFU, matchAID = m.matchid, matchAResult = 'dl', rate = m.dl)
+        self.session.add(md3)
+        self.session.flush()
         if count > 0:
             self.calMoney(u, ud, count)
             
-    def getMatchModeD(self, u, ud ,matchids):
+    def getMatchModeD(self, u, ud ,matchid):
         tomorrow = SysUtil.getTomorrow()
-        matches = self.session.query(MatchInfoD).\
-            filter(MatchInfoD.matchid.in_(matchids)).all()
+        m = self.session.query(MatchInfoD).\
+            filter(MatchInfoD.matchid == matchid).all()
             
-        count = 0
-        for m in matches:
-            md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '2', rate = m.s2)
-            self.session.add(md1)
-            md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '3', rate = m.s3)
-            self.session.add(md2)
-            md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '4', rate = m.s4)
-            self.session.add(md3)
-            self.session.flush()
-            count += 1
-            if count > 2:
-                break
+        count = 1
+        md1 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '2', rate = m.s2)
+        self.session.add(md1)
+        md2 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '3', rate = m.s3)
+        self.session.add(md2)
+        md3 = MatchData(userid = u.userid, date = tomorrow, singleFlag = GLBConfig.M_SCORE, matchAID = m.matchid, matchAResult = '4', rate = m.s4)
+        self.session.add(md3)
+        self.session.flush()
         if count > 0:
             self.calMoney(u, ud, count)

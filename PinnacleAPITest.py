@@ -16,8 +16,9 @@ if __name__ == '__main__':
     logger = logging.getLogger('serverLog')
 #    print(PinnacleAPI.GetSportsV2(logger))
     
-    print(PinnacleAPI.GetLeaguesV2(1, logger))
+#    print(PinnacleAPI.GetLeaguesV2(1, logger))
 #    print(PinnacleAPI.GetFixtures(15, logger=logger))
+    print(PinnacleAPI.GetFixtures(29, logger=logger))
 #    print(PinnacleAPI.GetSettledFixtures(15, logger=logger))
 #    print(PinnacleAPI.GetSpecialFixtures(15, logger=logger))
 #    print(PinnacleAPI.GetSettledSpecialFixtures(15, logger=logger))
