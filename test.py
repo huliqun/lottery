@@ -75,7 +75,15 @@ import urllib.request
 #                                 'matchids': '["20170217周四002"]'})
 #url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?' + ecodeq
 
-url = 'http://218.61.0.136:9000/sports/webService/getCurrentResult?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA'
+#url = 'http://218.61.0.136:9000/sports/webService/getGambleResult?userid=o0yUowQlKHq_vlDK-gjPaWR-eGEA&matchid=20170226周日034&gambleFlag=1'
+
+#ecodeq = urllib.parse.urlencode({'userid': 'o0yUowQlKHq_vlDK-gjPaWR-eGEA',
+#                                 'gambleFlag': '1',
+#                                 'matchid': '20170226周日034'})
+#url = 'http://218.61.0.136:9000/sports/webService/getGambleResult?' + ecodeq
+
+url = 'http://218.61.0.136:9000/sports/webService/setBaseMoney?userid=39c5cfb00020dcae3210463d16bc8bd0&basemoney=100'
+
 
 try:
      

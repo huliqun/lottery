@@ -21,7 +21,7 @@ class getCurrentResultResource(ServiceBase):
             self.errorReturn(GLBConfig.API_ERROR, 'userid 不存在.')
         
         matches = self.session.query(MatchData).\
-            filter(MatchData.date >= SysUtil.getToday()).\
+            filter(MatchData.date >= SysUtil.getTomorrow()).\
             filter(MatchData.status == GLBConfig.ENABLE).\
             filter(MatchData.userid == req_para['userid']).all()
             
