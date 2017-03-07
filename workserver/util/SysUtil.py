@@ -95,7 +95,10 @@ def getTomorrow():
     
 def getToday(): 
     return datetime.date.today()
-    
+
+def getLast2():
+    return datetime.date.today() - datetime.timedelta(days=2)
+ 
 def getYesterday():
     return datetime.date.today() - datetime.timedelta(days=1)
     

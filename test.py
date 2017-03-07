@@ -82,7 +82,7 @@ import urllib.request
 #                                 'matchid': '20170226周日034'})
 #url = 'http://218.61.0.136:9000/sports/webService/getGambleResult?' + ecodeq
 
-url = 'http://218.61.0.136:9000/sports/webService/setBaseMoney?userid=39c5cfb00020dcae3210463d16bc8bd0&basemoney=100'
+url = 'http://127.0.0.1:9000/sports/webService/getGambleResult?userid=b4f7a0c15f2fd1f69369144ac8cad86f&gambleFlag=0'
 
 
 try:

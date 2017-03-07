@@ -114,6 +114,7 @@ class getGambleResultResource(ServiceBase):
                                
 
     def matchCalcMoney(self, u, udata, req_para):
+        self.matchresult(u, udata, SysUtil.getLast2())
         self.matchresult(u, udata, SysUtil.getYesterday())
         self.matchresult(u, udata, SysUtil.getToday())    
             
