@@ -50,6 +50,9 @@ class getAccountLogResource(ServiceBase):
 
             result = self.session.execute(text('select sum(usemoney) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumUse'] = result[0]
+            
+            result = self.session.execute(text('select sum(ResultMoney) from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
+            accountMsg['sumWin'] = result[0]
 
             result = self.session.execute(text('select max(usemoney)*0.08 from tbl_account_running where status = "1" and userid = :uid'), {'uid': req_para['userid'] }).first()
             accountMsg['sumCommission'] = result[0]
