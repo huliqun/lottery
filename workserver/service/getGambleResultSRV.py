@@ -210,7 +210,8 @@ class getGambleResultResource(ServiceBase):
         for m in matches:
             sumMoney += m.money
             m.ResultMoney = self.getMatchMoney(m)
-            winMoney += m.ResultMoney
+            if m.ResultMoney > 0:
+                winMoney += m.ResultMoney
             i+=1
             self.session.flush()
         fixTotal = 0.00
@@ -218,8 +219,8 @@ class getGambleResultResource(ServiceBase):
         fRiskMoney = 0.00
         if account:
             fixTotal = account.fixTotal
-            fTotalResult = account.totalResult+winMoney
-            fRiskMoney = account.riskMoney+winMoney
+            fTotalResult = account.totalResult+winMoney - sumMoney
+            fRiskMoney = account.riskMoney+winMoney - sumMoney
         if u.accounttype == GLBConfig.ATYPE_PERSION and ud.mode == GLBConfig.MODE_A:
             if fTotalResult > 0.00:
                 fixTotal = fixTotal + fTotalResult 
@@ -234,9 +235,9 @@ class getGambleResultResource(ServiceBase):
         ar = AccountRunning(userid = u.userid,
                             date = date,
                             useMoney = sumMoney,
-                            dResult = winMoney,
+                            dResult = winMoney - sumMoney,
                             riskMoney = fRiskMoney,
-                            totalResult = fRiskMoney,
+                            totalResult = fTotalResult,
                             fixTotal = fixTotal)
         self.session.add(ar)
         self.session.flush()
