@@ -152,12 +152,12 @@ class getGambleResultResource(ServiceBase):
     def getMatchMoney(self, m):
         mA= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchAID).first()
         if mA is None:
-            return 0.0
+            return 0
             
         if m.singleFlag == GLBConfig.M_DUAL:
             mB= self.session.query(MatchInfo).filter(MatchInfo.matchid == m.matchBID).first()
             if mA is None:
-                return 0.0
+                return 0
             
         if mA.mResult:
             if m.singleFlag == GLBConfig.M_SINGLE:
@@ -186,7 +186,7 @@ class getGambleResultResource(ServiceBase):
                 if int(m.matchAResult) == mScores:
                     return m.rate * m.money
             return -m.money
-        return 0.0
+        return 0
         
     def matchresult(self, u, ud, date):
         account = self.session.query(AccountRunning).\
@@ -211,6 +211,8 @@ class getGambleResultResource(ServiceBase):
         for m in matches:
             sumMoney += m.money
             m.ResultMoney = self.getMatchMoney(m)
+            if m.ResultMoney == 0:
+                return
             if m.ResultMoney > 0:
                 winMoney += m.ResultMoney
             i+=1
